@@ -146,7 +146,8 @@ Sobby::Server::Server(int argc, char* argv[]):
 	// Start server
 	m_server.reset(new ServerBuffer);
 
-	std::cout << "Opening session..." << std::endl;
+	std::cout << "Sobby " << sobby_version() << " starting up..."
+	          << std::endl;
 	if(session == NULL)
 		m_server->open(m_port);
 	else
@@ -185,9 +186,9 @@ Sobby::Server::~Server()
 
 void Sobby::Server::run()
 {
-	std::cout << "Running obby server " << sobby_version()
-		  << " (" << obby_codename() << ") on port " << m_port
-	          << std::endl;
+	std::cout << "Running server on port " << m_port
+	          << " using obby " << obby_version()
+		  << " (" << obby_codename() << ")" << std::endl;
 
 	if(m_interactive)
 	{
