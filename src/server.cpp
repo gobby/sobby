@@ -40,17 +40,22 @@ Sobby::Server::Server(int argc, char* argv[])
  : m_main_loop(Glib::MainLoop::create() )
 {
 	Glib::ustring name;
-	int port;
 	Glib::ustring password;
 
 	Glib::OptionEntry opt_common_name;
+	Glib::OptionEntry opt_common_interactive;
 	Glib::OptionEntry opt_net_port;
 	Glib::OptionEntry opt_auth_password;
 	
 	opt_common_name.set_short_name('n');
 	opt_common_name.set_long_name("name");
 	opt_common_name.set_description("Published server name");
-	
+
+	opt_common_interactive.set_short_name('i');
+	opt_common_interactive.set_long_name("Interactive");
+	opt_common_interactive.set_description("Show prompt to enter commands "
+	                                       "at run-time");
+
 	opt_net_port.set_short_name('p');
 	opt_net_port.set_long_name("port");
 	opt_net_port.set_description("Port to run the obby server on");
@@ -67,8 +72,9 @@ Sobby::Server::Server(int argc, char* argv[])
 		"Options to secure the obby server");
 	
 	opt_group_common.add_entry(opt_common_name, name);
+	opt_group_common.add_entry(opt_common_interactive, m_interactive);
 
-	opt_group_net.add_entry(opt_net_port, port);
+	opt_group_net.add_entry(opt_net_port, m_port);
 	
 	opt_group_auth.add_entry(opt_auth_password, password);
 	
@@ -82,12 +88,12 @@ Sobby::Server::Server(int argc, char* argv[])
 	opt_ctx.parse(argc, argv);
 	
 	// Default settings
-	if(port == 0) port = 6522;
+	if(m_port == 0) m_port = 6522;
 	if(name.empty() ) name = "Standalone obby server";
 
 	// Start server
 	std::cout << "Generating RSA key pair..." << std::endl;
-	m_server.reset(new obby::io::server_buffer(port) );
+	m_server.reset(new obby::io::server_buffer(m_port) );
 }
 
 Sobby::Server::~Server()
@@ -96,7 +102,8 @@ Sobby::Server::~Server()
 
 void Sobby::Server::run()
 {
-	std::cout << "Running obby server " << "0.2.0" /*PACKAGE_VERSION*/ << std::endl;
+	std::cout << "Running obby server " << "0.2.0" /*PACKAGE_VERSION*/
+	          << " on port " << m_port << std::endl;
 
 	// Install signal handler on stdin
 	Glib::RefPtr<Glib::IOChannel> stdin_channel =
@@ -110,7 +117,7 @@ void Sobby::Server::run()
 	);
 
 	// Show prompt
-	std::cout << "sobby > "; std::cout.flush();
+	if(m_interactive) std::cout << "sobby > "; std::cout.flush();
 
 	// Run main loop
 	m_main_loop->run();
@@ -123,32 +130,39 @@ bool Sobby::Server::on_stdin(Glib::IOCondition condition)
 	// ^D
 	if(!std::getline(std::cin, line) )
 	{
-		std::cout << std::endl;
+		if(m_interactive) std::cout << std::endl;
 		m_main_loop->quit();
 		return true;
 	}
+
+	// Do not evaluate command if not interactive
+	if(!m_interactive) return true;
 
 	// Lookup command in cmdmap
 	CommandMap::const_iterator iter = m_cmd_map.find(line);
 	if(iter == m_cmd_map.end() )
 	{
+		// Command not found
 		std::cerr << line << ": Command not found" << std::endl;
+		std::cout << "sobby > "; std::cout.flush();
 		return true;
 	}
 
 	// TODO: Split into command and arguments, execute command
 	ArgList list;
-	(this->*(iter->second))(list);
-
-	// Reshow prompt
-	std::cout << "sobby > "; std::cout.flush();
+	if ((this->*(iter->second))(list) )
+	{
+		// Reshow prompt
+		std::cout << "sobby > "; std::cout.flush();
+	}
 
 	return true;
 }
 
-void Sobby::Server::on_cmd_exit(const ArgList& args)
+bool Sobby::Server::on_cmd_exit(const ArgList& args)
 {
 	// 'exit'-command: Exit application
 	m_main_loop->quit();
+	return false;
 }
 

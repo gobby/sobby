@@ -38,7 +38,7 @@ class Server : private net6::non_copyable,
 public:
 	// TODO: Extra class cmdmap?
 	typedef std::vector<std::string> ArgList;
-	typedef void(Server::*ArgFunc)(const ArgList&);
+	typedef bool(Server::*ArgFunc)(const ArgList&);
 	typedef std::map<std::string, ArgFunc> CommandMap;
 
 	Server(int argc, char* argv[]);
@@ -46,9 +46,12 @@ public:
 
         void run();
 
-	void on_cmd_exit(const ArgList& args);
+	bool on_cmd_exit(const ArgList& args);
 protected:
 	virtual bool on_stdin(Glib::IOCondition condition);
+
+	int m_port;
+	bool m_interactive;
 
 	Glib::RefPtr<Glib::MainLoop> m_main_loop;
 	std::auto_ptr<obby::server_buffer> m_server;
