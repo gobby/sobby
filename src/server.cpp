@@ -61,59 +61,98 @@ Sobby::Server::Server(int argc, char* argv[])
 	Glib::ustring name;
 	Glib::ustring password;
 
+	Glib::ustring autosave_file;
+	int autosave_interval;
+
 	Glib::OptionEntry opt_common_name;
 	Glib::OptionEntry opt_common_interactive;
+	Glib::OptionEntry opt_common_autosave_file;
+	Glib::OptionEntry opt_common_autosave_interval;
+
 	Glib::OptionEntry opt_net_port;
+
 	Glib::OptionEntry opt_auth_password;
-	
+
 	opt_common_name.set_short_name('n');
 	opt_common_name.set_long_name("name");
 	opt_common_name.set_description("Published server name");
 
 	opt_common_interactive.set_short_name('i');
 	opt_common_interactive.set_long_name("interactive");
-	opt_common_interactive.set_description("Show prompt to enter commands "
-	                                       "at run-time");
+	opt_common_interactive.set_description(
+		"Show prompt to enter commands at run-time"
+	);
+
+	opt_common_autosave_file.set_long_name("autosave-file");
+	opt_common_autosave_file.set_description(
+		"File where to store autosaved sessions"
+	);
+
+	opt_common_autosave_interval.set_long_name("autosave-interval");
+	opt_common_autosave_interval.set_description(
+		"Interval (in seconds) between autosaves; 0 disables autosave"
+	);
 
 	opt_net_port.set_short_name('p');
 	opt_net_port.set_long_name("port");
-	opt_net_port.set_description("Port to run the obby server on");
-	
+	opt_net_port.set_description(
+		"Port to run the obby server on"
+	);
+
 	opt_auth_password.set_long_name("password");
 	opt_auth_password.set_description(
-		"Global password required to join the session");
-	
+		"Global password required to join the session"
+	);
+
 	Glib::OptionGroup opt_group_common("common", "Common options",
 		"General options");
 	Glib::OptionGroup opt_group_net("net", "Networking options",
 		"Options to set up the network");
 	Glib::OptionGroup opt_group_auth("auth", "Authentication options",
 		"Options to secure the obby server");
-	
+
 	opt_group_common.add_entry(opt_common_name, name);
 	opt_group_common.add_entry(opt_common_interactive, m_interactive);
+	opt_group_common.add_entry(opt_common_autosave_file, autosave_file);
+	opt_group_common.add_entry(opt_common_autosave_interval, autosave_interval);
 
 	opt_group_net.add_entry(opt_net_port, m_port);
-	
+
 	opt_group_auth.add_entry(opt_auth_password, password);
-	
+
 	Glib::OptionContext opt_ctx;
 	opt_ctx.set_help_enabled(true);
 
 	opt_ctx.add_group(opt_group_common);
 	opt_ctx.add_group(opt_group_net);
 	opt_ctx.add_group(opt_group_auth);
-	
+
 	opt_ctx.parse(argc, argv);
-	
+
 	// Default settings
 	if(m_port == 0) m_port = 6522;
 	if(name.empty() ) name = "Standalone obby server";
+	if(autosave_file.empty() ) autosave_file = "autosave.obby";
 
 	// Start server
 	std::cout << "Generating RSA key pair..." << std::endl;
-	m_server.reset(new obby::io::server_buffer(m_port) );
+	m_server.reset(new obby::io::server_buffer);
+	m_server->open(m_port);
 	m_server->set_global_password(password);
+
+	if(autosave_interval > 0)
+	{
+		m_autosaver.reset(
+			new AutoSaver(
+				*m_server,
+				autosave_file,
+				autosave_interval
+			)
+		);
+
+		m_autosaver->error_event().connect(
+			sigc::mem_fun(*this, &Server::on_autosave_error) );
+	}
 
 #ifdef WITH_HOWL
 	m_zeroconf.reset(new obby::zeroconf);
@@ -130,8 +169,8 @@ Sobby::Server::~Server()
 
 void Sobby::Server::run()
 {
-	std::cout << "Running obby server " << sobby_version() <<
-		  " on port " << m_port << std::endl;
+	std::cout << "Running obby server " << sobby_version()
+		  << " on port " << m_port << std::endl;
 
 	if(m_interactive)
 	{
@@ -194,6 +233,17 @@ bool Sobby::Server::on_stdin(Glib::IOCondition condition)
 	}
 
 	return true;
+}
+
+void Sobby::Server::on_autosave_error(const std::exception& e)
+{
+	std::cout << "Autosave failed: " << e.what() << std::endl;
+
+	if(m_interactive)
+	{
+		// TODO: show_prompt method?
+		std::cout << "sobby > "; std::cout.flush();
+	}
 }
 
 bool Sobby::Server::on_cmd_help(const ArgList& args)

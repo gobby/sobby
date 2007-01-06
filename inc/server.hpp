@@ -25,6 +25,7 @@
 #include <glibmm/main.h>
 #include "io/buffer_wrapper.hpp"
 #include "config.hpp"
+#include "autosaver.hpp"
 
 #ifdef WITH_HOWL
 # include <obby/zeroconf.hpp>
@@ -54,11 +55,14 @@ public:
 protected:
 	virtual bool on_stdin(Glib::IOCondition condition);
 
+	virtual void on_autosave_error(const std::exception& e);
+
 	int m_port;
 	bool m_interactive;
 
 	Glib::RefPtr<Glib::MainLoop> m_main_loop;
 	std::auto_ptr<obby::server_buffer> m_server;
+	std::auto_ptr<AutoSaver> m_autosaver;
 #ifdef WITH_HOWL
 	std::auto_ptr<obby::zeroconf> m_zeroconf;
 #endif
