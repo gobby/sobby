@@ -294,6 +294,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 
 	// Start server
 	m_server.reset(new ServerBuffer);
+	m_server->set_enable_keepalives(true);
 
 	if(session == NULL)
 		m_server->open(m_port);
