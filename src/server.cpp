@@ -63,7 +63,7 @@ Sobby::Server::Server(Config& config, int argc, char* argv[]):
 	Glib::ustring password;
 	const char* session = NULL;
 
-	Glib::ustring autosave_file;
+	std::string autosave_file;
 	int autosave_interval = 0;
 
 	Glib::OptionEntry opt_common_name;
@@ -77,7 +77,9 @@ Sobby::Server::Server(Config& config, int argc, char* argv[]):
 
 	opt_common_name.set_short_name('n');
 	opt_common_name.set_long_name("name");
+	opt_common_name.set_arg_description("NAME");
 	opt_common_name.set_description("Published server name");
+
 
 	opt_common_interactive.set_short_name('i');
 	opt_common_interactive.set_long_name("interactive");
@@ -86,22 +88,26 @@ Sobby::Server::Server(Config& config, int argc, char* argv[]):
 	);
 
 	opt_common_autosave_file.set_long_name("autosave-file");
+	opt_common_autosave_file.set_arg_description("FILE");
 	opt_common_autosave_file.set_description(
 		"File where to store autosaved sessions"
 	);
 
 	opt_common_autosave_interval.set_long_name("autosave-interval");
+	opt_common_autosave_interval.set_arg_description("INTERVAL");
 	opt_common_autosave_interval.set_description(
 		"Interval (in seconds) between autosaves; 0 disables autosave"
 	);
 
 	opt_net_port.set_short_name('p');
 	opt_net_port.set_long_name("port");
+	opt_net_port.set_arg_description("PORT NUMBER");
 	opt_net_port.set_description(
 		"Port to run the obby server on"
 	);
 
 	opt_auth_password.set_long_name("password");
+	opt_auth_password.set_arg_description("PASSWORD");
 	opt_auth_password.set_description(
 		"Global password required to join the session"
 	);
@@ -115,7 +121,11 @@ Sobby::Server::Server(Config& config, int argc, char* argv[]):
 
 	opt_group_common.add_entry(opt_common_name, name);
 	opt_group_common.add_entry(opt_common_interactive, m_interactive);
-	opt_group_common.add_entry(opt_common_autosave_file, autosave_file);
+
+	opt_group_common.add_entry_filename(
+		opt_common_autosave_file,
+		autosave_file
+	);
 
 	opt_group_common.add_entry(
 		opt_common_autosave_interval,
@@ -126,7 +136,7 @@ Sobby::Server::Server(Config& config, int argc, char* argv[]):
 
 	opt_group_auth.add_entry(opt_auth_password, password);
 
-	Glib::OptionContext opt_ctx("- [session]");
+	Glib::OptionContext opt_ctx("[session]");
 	opt_ctx.set_help_enabled(true);
 
 	opt_ctx.set_main_group(opt_group_common);
