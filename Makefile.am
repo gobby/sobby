@@ -18,6 +18,8 @@ sobby_SOURCES  += src/command_executer.cpp
 sobby_SOURCES  += src/server.cpp
 sobby_SOURCES  += src/main.cpp
 
+dist_man_MANS = sobby.1
+
 # Fix some permissions if they are not set properly when building the tarball
 dist-hook:
 	chmod u+x $(distdir)/missing $(distdir)/install-sh \
