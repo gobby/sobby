@@ -319,18 +319,24 @@ Sobby::Server::Server(int argc, char* argv[]):
 	m_command_executer.reset(new CommandExecuter(*m_server) );
 
 #ifdef WITH_HOWL
-	m_zeroconf.reset(new obby::zeroconf);
-	m_zeroconf->publish(name, m_port);
+	try
+	{
+		m_zeroconf.reset(new obby::zeroconf);
+		m_zeroconf->publish(name, m_port);
+	}
+	catch(std::runtime_error&)
+	{
+		std::cerr << "ERROR: Howl initialisation failed. Please run "
+		          << "mDNSResponder prior to Sobby." << std::endl;
+		std::cerr << "       Zeroconf support is thus deactivated for "
+		          << "this session." << std::endl;
+		m_zeroconf.reset();
+	}
 #endif
 }
 
 Sobby::Server::~Server()
 {
-#ifdef WITH_HOWL
-	// Why does this not happen in obby::zeroconf::~zeroconf?
-	// - armin, 2006-04-09
-	m_zeroconf->unpublish_all();
-#endif
 }
 
 void Sobby::Server::run()
