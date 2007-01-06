@@ -36,11 +36,17 @@ class Server : private net6::non_copyable,
                public sigc::trackable
 {
 public:
+	// TODO: Extra class cmdmap?
+	typedef std::vector<std::string> ArgList;
+	typedef void(Server::*ArgFunc)(const ArgList&);
+	typedef std::map<std::string, ArgFunc> CommandMap;
+
 	Server(int argc, char* argv[]);
 	~Server();
 
         void run();
 
+	void on_cmd_exit(const ArgList& args);
 protected:
 	virtual bool on_stdin(Glib::IOCondition condition);
 
@@ -49,6 +55,8 @@ protected:
 #ifdef WITH_HOWL
 	std::auto_ptr<obby::zeroconf> m_zeroconf;
 #endif
+
+	static const CommandMap& m_cmd_map;
 };
 
 }

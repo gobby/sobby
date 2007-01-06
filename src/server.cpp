@@ -22,6 +22,20 @@
 #include <glibmm/optioncontext.h>
 #include "server.hpp"
 
+namespace
+{
+	const Sobby::Server::CommandMap& create_cmd_map()
+	{
+		static Sobby::Server::CommandMap map;
+
+		map["exit"] = &Sobby::Server::on_cmd_exit;
+
+		return map;
+	}
+}
+
+const Sobby::Server::CommandMap& Sobby::Server::m_cmd_map = create_cmd_map();
+
 Sobby::Server::Server(int argc, char* argv[])
  : m_main_loop(Glib::MainLoop::create() )
 {
@@ -114,11 +128,27 @@ bool Sobby::Server::on_stdin(Glib::IOCondition condition)
 		return true;
 	}
 
+	// Lookup command in cmdmap
+	CommandMap::const_iterator iter = m_cmd_map.find(line);
+	if(iter == m_cmd_map.end() )
+	{
+		std::cerr << line << ": Command not found" << std::endl;
+		return true;
+	}
+
 	// TODO: Split into command and arguments, execute command
+	ArgList list;
+	(this->*(iter->second))(list);
 
 	// Reshow prompt
 	std::cout << "sobby > "; std::cout.flush();
 
 	return true;
+}
+
+void Sobby::Server::on_cmd_exit(const ArgList& args)
+{
+	// 'exit'-command: Exit application
+	m_main_loop->quit();
 }
 
