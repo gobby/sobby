@@ -60,6 +60,7 @@ Sobby::Server::Server(int argc, char* argv[])
 {
 	Glib::ustring name;
 	Glib::ustring password;
+	const char* session = NULL;
 
 	Glib::ustring autosave_file;
 	int autosave_interval;
@@ -123,11 +124,15 @@ Sobby::Server::Server(int argc, char* argv[])
 	Glib::OptionContext opt_ctx;
 	opt_ctx.set_help_enabled(true);
 
-	opt_ctx.add_group(opt_group_common);
+	opt_ctx.set_main_group(opt_group_common);
 	opt_ctx.add_group(opt_group_net);
 	opt_ctx.add_group(opt_group_auth);
 
 	opt_ctx.parse(argc, argv);
+
+	// Get session file
+	if(argc > 1)
+		session = argv[1];
 
 	// Default settings
 	if(m_port == 0) m_port = 6522;
@@ -137,7 +142,13 @@ Sobby::Server::Server(int argc, char* argv[])
 	// Start server
 	std::cout << "Generating RSA key pair..." << std::endl;
 	m_server.reset(new obby::io::server_buffer);
-	m_server->open(m_port);
+
+	std::cout << "Opening session..." << std::endl;
+	if(session == NULL)
+		m_server->open(m_port);
+	else
+		m_server->open(session, m_port);
+
 	m_server->set_global_password(password);
 
 	if(autosave_interval > 0)
