@@ -1,6 +1,12 @@
 sobby
 =====
 
+Version 0.3.0:
+ * Updated for obby 0.3.0
+ * Automatic save of serialised sessions (e.g. for web presentation through
+   the script provided by `obby')
+ * Ability to restore saved session files
+
 Version 0.2.0:
  * Initial release
 
