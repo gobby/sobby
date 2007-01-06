@@ -1,5 +1,5 @@
 /* sobby - A standalone server for obby
- * Copyright (C) 2005 0x539 dev group
+ * Copyright (C) 2005, 2006 0x539 dev group
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -22,6 +22,9 @@
 #include <glibmm/ustring.h>
 #include <glibmm/refptr.h>
 #include <glibmm/iochannel.h>
+#ifdef WIN32
+# include <gtkmm/window.h>
+#endif
 #include <net6/non_copyable.hpp>
 #include <net6/socket.hpp>
 
@@ -61,7 +64,7 @@ public:
 	 */
 #ifdef WIN32
 	main_connection(Gtk::Window& window, const net6::socket& sock,
-	               Condition condition);
+	                Condition condition);
 #else
 	main_connection(const net6::socket& sock, Condition condition);
 #endif
@@ -137,19 +140,19 @@ inline main_connection::Condition operator^(
 inline main_connection::Condition operator|=(
 	main_connection::Condition& rhs, main_connection::Condition lhs
 ) {
-	rhs = (rhs | lhs);
+	return rhs = (rhs | lhs);
 }
 
 inline main_connection::Condition operator&=(
 	main_connection::Condition& rhs, main_connection::Condition lhs
 ) {
-	rhs = (rhs & lhs);
+	return rhs = (rhs & lhs);
 }
 
 inline main_connection::Condition operator^=(
 	main_connection::Condition& rhs, main_connection::Condition lhs
 ) {
-	rhs = (rhs ^ lhs);
+	return rhs = (rhs ^ lhs);
 }
 
 inline main_connection::Condition operator~(main_connection::Condition rhs) {
