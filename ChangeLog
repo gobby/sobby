@@ -1,41 +1,146 @@
-Fri Jul 29 21:46:51 UTC 2005  Philipp Kern <phil@0x539.de>
+Tue Apr 11 14:26:34 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Bump the version number and temporary remove the NEWS check
+
+Mon Apr 10 11:15:23 CEST 2006  Philipp Kern <phil@0x539.de>
+  * NEWS item added
+
+Mon Apr 10 11:14:36 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Do not kill the server if Zeroconf initialisation fails
+
+Sun Apr  9 15:59:16 CEST 2006  Armin Burgmeier <armin@0x539.de>
+  * Throw Server::Exit instead of calling std::exit() with --write-configfile
+
+Fri Mar 31 11:36:46 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Install the manual page
+
+Fri Mar 31 11:34:12 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Add an updated manual page
+
+Fri Mar 31 00:38:11 CEST 2006  Armin Burgmeier <armin@0x539.de>
+  * Specify config file on commandline
+
+Thu Mar 30 22:29:44 CEST 2006  Armin Burgmeier <armin@0x539.de>
+  * Set argument description for commandline arguments
+
+Thu Mar 30 20:14:23 CEST 2006  Armin Burgmeier <armin@0x539.de>
+  * Store autosave interval in config
+
+Wed Mar 29 20:51:33 CEST 2006  Armin Burgmeier <armin@0x539.de>
+  * Configuration file support [fixes #128]
+
+Wed Mar 29 20:29:32 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Update version presentation on startup
+
+Wed Mar 29 19:04:14 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Replace config.hpp with features.hpp; depend on libxml++ and newer net6/obby
+
+Wed Mar 29 18:54:49 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Bump the version to 0.3.99
+
+Tue Mar 28 23:25:58 CEST 2006  Armin Burgmeier <armin@0x539.de>
+  * Added CommandExecuter with initial remove command [fixes #137]
+
+Tue Mar 28 21:32:52 CEST 2006  Armin Burgmeier <armin@0x539.de>
+  * Made Sobby compile again
+
+Tue Mar  7 00:13:31 CET 2006  Philipp Kern <phil@0x539.de>
+  * Add maintainer mode to Sobby's configure script
+
+Thu Feb  2 17:50:36 CET 2006  Armin Burgmeier <armin@0x539.de>
+  * Changed buffer wrapper to match obby's new_net()
+
+Sun Jan 29 23:47:40 CET 2006  Armin Burgmeier <armin@0x539.de>
+  * Adjusted buffer wrappers for new net6 io conditions
+
+Tue Nov 22 18:54:29 CET 2005  Armin Burgmeier <armin@0x539.de>
+  * Removed covariant returns in buffer wrapper
+
+Sat Nov 19 12:30:03 CET 2005  Armin Burgmeier <armin@0x539.de>
+  * Updated README for net6-1.2 and obby-0.3
+
+Sat Nov 19 12:26:42 CET 2005  Armin Burgmeier <armin@0x539.de>
+  * Removed atomic write, too, as in Gobby
+
+Tue Nov 15 23:43:28 CET 2005  Philipp Kern <phil@0x539.de>
+  * Fix some permissions in the dist-hook
+
+Tue Nov 15 23:32:15 CET 2005  Philipp Kern <phil@0x539.de>
+  * Updated NEWS
+
+Sat Nov  5 00:50:33 CET 2005  Armin Burgmeier <armin@0x539.de>
+  * Adjustment for new inc_flags/exc_flags
+
+Thu Nov  3 14:56:03 CET 2005  Armin Burgmeier <armin@0x539.de>
+  * Accept session file to open as command line parameter
+
+Thu Nov  3 13:00:48 CET 2005  Armin Burgmeier <armin@0x539.de>
+  * Do not use IPv6 when opening a server
+
+Thu Nov  3 12:46:29 CET 2005  Armin Burgmeier <armin@0x539.de>
+  * Write autosave contents in temp dir and rename atomically after success
+
+Thu Nov  3 12:23:08 CET 2005  Armin Burgmeier <armin@0x539.de>
+  * Display only command instead of whole line when command not found
+
+Thu Nov  3 12:21:33 CET 2005  Armin Burgmeier <armin@0x539.de>
+  * Added AutoSaver
+
+Thu Nov  3 12:21:19 CET 2005  Armin Burgmeier <armin@0x539.de>
+  * Adapted buffer_wrapper from gobby
+
+Thu Nov  3 10:27:18 CET 2005  Philipp Kern <phil@0x539.de>
+  * Added missing {inc,src}/common.{hpp,cpp}
+
+Sat Oct  1 11:25:14 CEST 2005  Philipp Kern <phil@0x539.de>
+  * Display version correctly
+
+Sat Oct  1 08:56:08 CEST 2005  Philipp Kern <phil@0x539.de>
+  * Ported Sobby to obby 0.3.0
+
+Fri Jul 29 23:47:37 CEST 2005  Philipp Kern <phil@0x539.de>
+  tagged sobby-0.2.0
+
+Fri Jul 29 23:47:31 CEST 2005  Philipp Kern <phil@0x539.de>
+  * Updated ChangeLog for release
+
+Fri Jul 29 23:46:51 CEST 2005  Philipp Kern <phil@0x539.de>
   * Only query stdin when m_interactive is set
 
-Fri Jul 29 20:31:04 UTC 2005  Philipp Kern <phil@0x539.de>
+Fri Jul 29 22:31:04 CEST 2005  Philipp Kern <phil@0x539.de>
   * Added Zeroconf support
 
-Fri Jul 29 20:12:45 UTC 2005  Philipp Kern <phil@0x539.de>
+Fri Jul 29 22:12:45 CEST 2005  Philipp Kern <phil@0x539.de>
   * Fixed typo and password authentication
 
-Fri Jul 29 19:39:36 UTC 2005  Philipp Kern <phil@0x539.de>
+Fri Jul 29 21:39:36 CEST 2005  Philipp Kern <phil@0x539.de>
   * Added content to README
 
-Fri Jul 29 19:35:54 UTC 2005  Philipp Kern <phil@0x539.de>
+Fri Jul 29 21:35:54 CEST 2005  Philipp Kern <phil@0x539.de>
   * Added content into NEWS
 
-Fri Jul 29 19:35:25 UTC 2005  Philipp Kern <phil@0x539.de>
+Fri Jul 29 21:35:25 CEST 2005  Philipp Kern <phil@0x539.de>
   * Added content into AUTHORS
 
-Fri Jul 29 12:38:35 UTC 2005  Armin Burgmeier <armin@0x539.de>
+Fri Jul 29 14:38:35 CEST 2005  Armin Burgmeier <armin@0x539.de>
   * Some initial commands
 
-Fri Jul 29 12:01:10 UTC 2005  Armin Burgmeier <armin@0x539.de>
+Fri Jul 29 14:01:10 CEST 2005  Armin Burgmeier <armin@0x539.de>
   * Optional interactive flag
 
-Thu Jul 28 10:48:03 UTC 2005  Armin Burgmeier <armin@0x539.de>
+Thu Jul 28 12:48:03 CEST 2005  Armin Burgmeier <armin@0x539.de>
   * Command line interface
 
-Thu Jul 28 10:45:13 UTC 2005  Armin Burgmeier <armin@0x539.de>
+Thu Jul 28 12:45:13 CEST 2005  Armin Burgmeier <armin@0x539.de>
   * Added src/io/main_connection_generic.cpp to Makefile.am
 
-Thu Jul 28 10:12:17 UTC 2005  Philipp Kern <phil@0x539.de>
+Thu Jul 28 12:12:17 CEST 2005  Philipp Kern <phil@0x539.de>
   * Autotoolised sobby
 
-Wed Jul 27 20:51:54 UTC 2005  Armin Burgmeier <armin@0x539.de>
+Wed Jul 27 22:51:54 CEST 2005  Armin Burgmeier <armin@0x539.de>
   * Initial sobby
 
-Wed Jul 27 20:14:17 UTC 2005  Armin Burgmeier <armin@0x539.de>
+Wed Jul 27 22:14:17 CEST 2005  Armin Burgmeier <armin@0x539.de>
   * Added io/
 
-Wed Jul 27 17:02:55 UTC 2005  Philipp Kern <phil@0x539.de>
+Wed Jul 27 19:02:55 CEST 2005  Philipp Kern <phil@0x539.de>
   * Added the initial directories
