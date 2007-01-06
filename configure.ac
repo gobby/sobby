@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([sobby], [0.4.0rc1], [crew@0x539.de])
+AC_INIT([sobby], [0.4.0rc2], [crew@0x539.de])
 AM_INIT_AUTOMAKE(1.9)
 AM_MAINTAINER_MODE
 AC_CONFIG_SRCDIR([inc/server.hpp])
@@ -35,7 +35,8 @@ AM_CONDITIONAL(WIN32, test x$win32 = xtrue)
 AC_CACHE_SAVE
 
 # Checks for libraries.
-PKG_CHECK_MODULES([sobby], [net6-1.3 obby-0.4 glibmm-2.4 >= 2.6.0 libxml++-2.6])
+PKG_CHECK_MODULES([sobby], [net6-1.3 obby-0.4 >= 0.4.0rc4
+                            glibmm-2.4 >= 2.6.0 libxml++-2.6])
 
 # Check for howl in libobby.
 AC_CHECK_LIB(obby, obby_has_zeroconf, [obby_has_zeroconf=yes],
