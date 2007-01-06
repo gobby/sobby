@@ -1,0 +1,52 @@
+.TH SOBBY 1 "March 31, 2005"
+.\" Please adjust this date whenever revising the manpage.
+.\" For manpage-specific macros: see man(7).
+.SH NAME
+.B sobby
+\- a dedicated server for collaborative editing
+.SH SYNOPSIS
+.B sobby
+.SH DESCRIPTION
+.B sobby
+is a dedicated server which allows clients to edit plain text documents and
+source files collaboratively over a network. Changes to the documents are
+syncronised instantly to the other clients.
+.PP
+.SH OPTIONS
+These programs follow the usual GNU command line syntax, with long
+options starting with two dashes (`-'). A summary of options is included below.
+.TP
+.B \-?, \-\-help
+Show help options
+.TP
+.B \-n, \-\-name=NAME
+Published server name
+.TP
+.B \-i, \-\-interactive
+Show prompt to enter commands at runtime
+.TP
+.B \-p, \-\-port=PORT
+Port which should be used to listen for clients
+.TP
+.B \-\-password=PASSWORD
+Global password required to join the session
+.TP
+.B \-c, \-\-configfile=FILE
+Use the settings specified in the given configuration file
+.TP
+.B \-\-write\-configfile=FILE
+Write the settings passed on the command line to the specified configuration
+file and exit
+.TP
+.B \-\-autosave\-file=FILE
+File where to store autosaved sessions
+.TP
+.B \-\-autosave\-interval=INTERVAL
+Interval (in seconds) between autosaves; 0 disables them
+.PP
+.SH AUTHOR
+.B sobby
+was written by the 0x539 dev group <crew@0x539.de>.
+.PP
+This manual page was written by Philipp Kern <pkern@debian.org>,
+for the Debian project (but may be used by others).
