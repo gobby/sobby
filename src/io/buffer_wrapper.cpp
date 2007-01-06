@@ -19,7 +19,6 @@
 #include <cassert>
 #include <obby/format_string.hpp>
 #include "io/buffer_wrapper.hpp"
-#include "common.hpp"
 
 #ifdef WIN32
 obby::io::client::client(Gtk::Window& window, const net6::address& addr)
@@ -180,7 +179,7 @@ obby::io::server::get_peer_iter(const net6::server::peer& peer)
 	{
 		// Should not happen...
 		obby::format_string str(
-			_("Peer %0% (%1%) not found in peer list") );
+			"Peer %0% (%1%) not found in peer list");
 		str << peer.get_name() << peer.get_address().get_name();
 		throw Error(Error::PEER_NOT_FOUND, str.str() );
 	}
@@ -286,7 +285,7 @@ obby::io::server_buffer::server_buffer(Gtk::Window& window, unsigned int port)
 #else
 obby::io::server_buffer::server_buffer(unsigned int port)
 #endif
- : obby::buffer(), obby::server_buffer(port)
+ : obby::buffer(), obby::server_buffer()
 {
 #ifdef WIN32
 	net6::server* server = new io::server(window, port, false);
