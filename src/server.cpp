@@ -220,7 +220,7 @@ bool Sobby::Server::on_stdin(Glib::IOCondition condition)
 	if(iter == m_cmd_map.end() )
 	{
 		// Command not found
-		std::cerr << line << ": Command not found" << std::endl;
+		std::cerr << command << ": Command not found" << std::endl;
 		std::cout << "sobby > "; std::cout.flush();
 		return true;
 	}
@@ -237,7 +237,7 @@ bool Sobby::Server::on_stdin(Glib::IOCondition condition)
 
 void Sobby::Server::on_autosave_error(const std::exception& e)
 {
-	std::cout << "Autosave failed: " << e.what() << std::endl;
+	std::cerr << "Autosave failed: " << e.what() << std::endl;
 
 	if(m_interactive)
 	{
