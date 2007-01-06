@@ -342,8 +342,7 @@ Sobby::Server::~Server()
 void Sobby::Server::run()
 {
 	std::cout << "Running server on port " << m_port
-	          << " using obby " << obby_version()
-		  << " (" << obby_codename() << ")" << std::endl;
+	          << " using obby " << obby_version() << std::endl;
 
 	if(m_interactive)
 	{
