@@ -24,7 +24,7 @@
 #include <sigc++/trackable.h>
 #include <sigc++/connection.h>
 #include <sigc++/signal.h>
-#include <obby/server_buffer.hpp>
+#include "buffer_def.hpp"
 
 namespace Sobby
 {
@@ -37,7 +37,7 @@ class AutoSaver: private net6::non_copyable, public sigc::trackable
 public:
 	typedef sigc::signal<void, const std::exception&> signal_error_type;
 
-	AutoSaver(const obby::server_buffer& buffer,
+	AutoSaver(const ServerBuffer& buffer,
 	          const std::string& filename,
 	          unsigned int interval);
 	~AutoSaver();
@@ -46,7 +46,7 @@ public:
 protected:
 	bool on_timer();
 
-	const obby::server_buffer& m_buffer;
+	const ServerBuffer& m_buffer;
 	std::string m_filename;
 	sigc::connection m_conn_timer;
 	signal_error_type m_signal_error;

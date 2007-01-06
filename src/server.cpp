@@ -55,8 +55,8 @@ namespace
 
 const Sobby::Server::CommandMap& Sobby::Server::m_cmd_map = create_cmd_map();
 
-Sobby::Server::Server(int argc, char* argv[])
- : m_main_loop(Glib::MainLoop::create() )
+Sobby::Server::Server(int argc, char* argv[]):
+	m_main_loop(Glib::MainLoop::create() )
 {
 	Glib::ustring name;
 	Glib::ustring password;
@@ -115,7 +115,11 @@ Sobby::Server::Server(int argc, char* argv[])
 	opt_group_common.add_entry(opt_common_name, name);
 	opt_group_common.add_entry(opt_common_interactive, m_interactive);
 	opt_group_common.add_entry(opt_common_autosave_file, autosave_file);
-	opt_group_common.add_entry(opt_common_autosave_interval, autosave_interval);
+
+	opt_group_common.add_entry(
+		opt_common_autosave_interval,
+		autosave_interval
+	);
 
 	opt_group_net.add_entry(opt_net_port, m_port);
 
@@ -140,8 +144,7 @@ Sobby::Server::Server(int argc, char* argv[])
 	if(autosave_file.empty() ) autosave_file = "autosave.obby";
 
 	// Start server
-	std::cout << "Generating RSA key pair..." << std::endl;
-	m_server.reset(new obby::io::server_buffer);
+	m_server.reset(new ServerBuffer);
 
 	std::cout << "Opening session..." << std::endl;
 	if(session == NULL)
@@ -181,7 +184,8 @@ Sobby::Server::~Server()
 void Sobby::Server::run()
 {
 	std::cout << "Running obby server " << sobby_version()
-		  << " on port " << m_port << std::endl;
+		  << " (" << obby_codename() << ") on port " << m_port
+	          << std::endl;
 
 	if(m_interactive)
 	{
@@ -195,6 +199,8 @@ void Sobby::Server::run()
 			stdin_channel,
 			Glib::IO_IN
 		);
+
+		// TODO: Readline, somehow?
 
 		// Show prompt
 		std::cout << "sobby > "; std::cout.flush();
@@ -296,15 +302,18 @@ bool Sobby::Server::on_cmd_users(const ArgList& args)
 	);
 
 	std::cout << count << " users" << std::endl;
+	return true;
 }
 
 bool Sobby::Server::on_cmd_documents(const ArgList& args)
 {
-	for(obby::buffer::document_iterator iter = m_server->document_begin();
+	for(Buffer::document_iterator iter = m_server->document_begin();
 	    iter != m_server->document_end();
 	    ++ iter)
+	{
 		std::cout << " * " << iter->get_title() << std::endl;
+	}
 
 	std::cout << m_server->document_count() << " documents" << std::endl;
+	return true;
 }
-

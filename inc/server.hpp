@@ -23,7 +23,7 @@
 #include <sigc++/trackable.h>
 #include <glibmm/refptr.h>
 #include <glibmm/main.h>
-#include "io/buffer_wrapper.hpp"
+#include "buffer_def.hpp"
 #include "config.hpp"
 #include "autosaver.hpp"
 
@@ -61,7 +61,7 @@ protected:
 	bool m_interactive;
 
 	Glib::RefPtr<Glib::MainLoop> m_main_loop;
-	std::auto_ptr<obby::server_buffer> m_server;
+	std::auto_ptr<ServerBuffer> m_server;
 	std::auto_ptr<AutoSaver> m_autosaver;
 #ifdef WITH_HOWL
 	std::auto_ptr<obby::zeroconf> m_zeroconf;

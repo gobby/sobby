@@ -26,7 +26,7 @@
 #include <glibmm/miscutils.h>
 #include "autosaver.hpp"
 
-Sobby::AutoSaver::AutoSaver(const obby::server_buffer& buffer,
+Sobby::AutoSaver::AutoSaver(const ServerBuffer& buffer,
                             const std::string& filename,
                             unsigned int interval):
 	m_buffer(buffer), m_filename(filename)
