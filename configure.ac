@@ -4,6 +4,7 @@
 AC_PREREQ(2.59)
 AC_INIT([sobby], [0.3.0], [crew@0x539.de])
 AM_INIT_AUTOMAKE(1.9 check-news)
+AM_MAINTAINER_MODE
 AC_CONFIG_SRCDIR([inc/server.hpp])
 AC_CONFIG_HEADER([inc/config.hpp])
 
