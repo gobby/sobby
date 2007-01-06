@@ -277,12 +277,25 @@ bool Sobby::Server::on_cmd_users(const ArgList& args)
 {
 	const obby::user_table& user_table = m_server->get_user_table();
 	for(obby::user_table::iterator iter =
-		user_table.begin(obby::user::flags::CONNECTED, false);
-	    iter != user_table.end(obby::user::flags::CONNECTED, false);
+		user_table.begin(
+			obby::user::flags::CONNECTED,
+			obby::user::flags::NONE
+		);
+	    iter != user_table.end(
+		obby::user::flags::CONNECTED,
+		obby::user::flags::NONE
+	    );
 	    ++ iter)
+	{
 		std::cout << " * " << iter->get_name() << std::endl;
-	std::cout << user_table.count(obby::user::flags::CONNECTED, false)
-	          << " users" << std::endl;
+	}
+
+	unsigned int count = user_table.count(
+		obby::user::flags::CONNECTED,
+		obby::user::flags::NONE
+	);
+
+	std::cout << count << " users" << std::endl;
 }
 
 bool Sobby::Server::on_cmd_documents(const ArgList& args)
@@ -291,6 +304,7 @@ bool Sobby::Server::on_cmd_documents(const ArgList& args)
 	    iter != m_server->document_end();
 	    ++ iter)
 		std::cout << " * " << iter->get_title() << std::endl;
+
 	std::cout << m_server->document_count() << " documents" << std::endl;
 }
 
