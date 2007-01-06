@@ -47,10 +47,6 @@ obby::command_result Sobby::CommandExecuter::
 		DocumentInfo* info = ctx.from_string(paramlist);
 
 		m_buffer.document_remove(*info);
-
-		obby::format_string str("%0% has removed a document: %1%");
-		str << from.get_name() << paramlist;
-		m_buffer.send_message(str.str() );
 	}
 	catch(serialise::conversion_error& e)
 	{
