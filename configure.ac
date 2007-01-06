@@ -35,13 +35,13 @@ AC_CACHE_SAVE
 PKG_CHECK_MODULES([sobby], [net6-1.3 obby-0.4 glibmm-2.4 >= 2.6.0 libxml++-2.6])
 
 # Check for howl in libobby.
-AC_CHECK_LIB(obby, obby_has_howl)
-if test "x$ac_cv_lib_obby_obby_has_howl" = "xyes" ; then
-	# We do not need any new flags as obby should take care of it.
-	PKG_CHECK_MODULES([howl], [howl])
-	AC_DEFINE([WITH_HOWL], 1, [Define whether to use howl support])
+AC_CHECK_LIB(obby, obby_has_zeroconf, [obby_has_zeroconf=yes],
+             [obby_has_zeroconf=no], [$pkg_cv_sobby_LIBS])
+if test "x$ac_cv_lib_obby_obby_has_zeroconf" = "xyes" ; then
+	# obby's pkg-config script takes care of any additional dependencies
+	AC_DEFINE([WITH_ZEROCONF], 1, [Define whether to use Zeroconf])
 fi
-AM_CONDITIONAL(WITH_HOWL, test x$ac_cv_lib_obby_obby_has_howl = xyes)
+AM_CONDITIONAL(WITH_ZEROCONF, test x$ac_cv_lib_obby_obby_has_zeroconf = xyes)
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
