@@ -132,19 +132,22 @@ void Sobby::Server::run()
 	std::cout << "Running obby server " << "0.2.0" /*PACKAGE_VERSION*/
 	          << " on port " << m_port << std::endl;
 
-	// Install signal handler on stdin
-	Glib::RefPtr<Glib::IOChannel> stdin_channel =
-		Glib::IOChannel::create_from_fd(0);
+	if(m_interactive)
+	{
+		// Install signal handler on stdin
+		Glib::RefPtr<Glib::IOChannel> stdin_channel =
+			Glib::IOChannel::create_from_fd(0);
 
-	// Connect to signal_io()
-	Glib::signal_io().connect(
-		sigc::mem_fun(*this, &Server::on_stdin),
-		stdin_channel,
-		Glib::IO_IN
-	);
+		// Connect to signal_io()
+		Glib::signal_io().connect(
+			sigc::mem_fun(*this, &Server::on_stdin),
+			stdin_channel,
+			Glib::IO_IN
+		);
 
-	// Show prompt
-	if(m_interactive) std::cout << "sobby > "; std::cout.flush();
+		// Show prompt
+		std::cout << "sobby > "; std::cout.flush();
+	}
 
 	// Run main loop
 	m_main_loop->run();
