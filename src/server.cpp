@@ -56,14 +56,15 @@ namespace
 const Sobby::Server::CommandMap& Sobby::Server::m_cmd_map = create_cmd_map();
 
 Sobby::Server::Server(Config& config, int argc, char* argv[]):
-	m_config(config), m_main_loop(Glib::MainLoop::create() )
+	m_config(config), m_port(0), m_interactive(false),
+	m_main_loop(Glib::MainLoop::create() )
 {
 	Glib::ustring name;
 	Glib::ustring password;
 	const char* session = NULL;
 
 	Glib::ustring autosave_file;
-	int autosave_interval;
+	int autosave_interval = 0;
 
 	Glib::OptionEntry opt_common_name;
 	Glib::OptionEntry opt_common_interactive;
@@ -142,7 +143,8 @@ Sobby::Server::Server(Config& config, int argc, char* argv[]):
 
 	// Default settings from config if not given by command line
 	// TODO: Should set them before parsing, but the parser seems
-	// to reset the value if the option is not given at all... :/
+	// to reset the value if the option is not given at all. Patch
+	// is committed in glibmm CVS.
 	if(m_port == 0)
 	{
 		m_port = settings.supply_value<unsigned int>(
@@ -164,6 +166,14 @@ Sobby::Server::Server(Config& config, int argc, char* argv[]):
 		autosave_file = settings.supply_value<Glib::ustring>(
 			"autosave_file",
 			"autosave.obby"
+		);
+	}
+
+	if(autosave_interval == 0) // breaks if config has non-zero value and commandline value is zero!
+	{
+		autosave_interval = settings.supply_value<unsigned int>(
+			"autosave_interval",
+			0
 		);
 	}
 

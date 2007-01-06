@@ -70,7 +70,7 @@ namespace
 			);
 		}
 #else
-		if(mkdir(path, 0700) == -1) // 700 since there might be passwords in the config file
+		if(mkdir(path, 0700) == -1) // 700 since there might be passwords in the config file. Bah. Does not work :(
 		{
 			throw Sobby::Config::Error(
 				Sobby::Config::Error::PATH_CREATION_FAILED,
