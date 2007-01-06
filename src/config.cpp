@@ -263,6 +263,11 @@ Sobby::Config::ParentEntry::const_iterator Sobby::Config::ParentEntry::
 	return const_iterator(m_map.end() );
 }
 
+Sobby::Config::Config()
+{
+	m_root.reset(new ParentEntry("sobby_config") );
+}
+
 Sobby::Config::Config(const Glib::ustring& file):
 	m_filename(file)
 {
@@ -292,7 +297,7 @@ Sobby::Config::Config(const Glib::ustring& file):
 	m_root.reset(new ParentEntry(*root) );
 }
 
-Sobby::Config::~Config()
+void Sobby::Config::save(const std::string& file)
 {
 	xmlpp::Document document;
 	xmlpp::Element* root = document.create_root_node("sobby_config");
@@ -300,10 +305,10 @@ Sobby::Config::~Config()
 
 	try
 	{
-		Glib::ustring dirname = Glib::path_get_dirname(m_filename);
+		Glib::ustring dirname = Glib::path_get_dirname(file);
 		create_path_to(dirname);
 
-		document.write_to_file_formatted(m_filename, "UTF-8");
+		document.write_to_file_formatted(file, "UTF-8");
 	}
 	catch(Glib::Exception& e)
 	{

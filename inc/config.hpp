@@ -294,8 +294,9 @@ public:
 		map_type m_map;
 	};
 
+	Config();
 	Config(const Glib::ustring& file);
-	~Config();
+	void save(const std::string& file);
 
 	ParentEntry& get_root();
 	const ParentEntry& get_root() const;

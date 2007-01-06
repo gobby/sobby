@@ -55,8 +55,8 @@ namespace
 
 const Sobby::Server::CommandMap& Sobby::Server::m_cmd_map = create_cmd_map();
 
-Sobby::Server::Server(Config& config, int argc, char* argv[]):
-	m_config(config), m_port(0), m_interactive(false),
+Sobby::Server::Server(int argc, char* argv[]):
+	m_interactive(false),
 	m_main_loop(Glib::MainLoop::create() )
 {
 	Glib::ustring name;
@@ -64,53 +64,72 @@ Sobby::Server::Server(Config& config, int argc, char* argv[]):
 	const char* session = NULL;
 
 	std::string autosave_file;
-	int autosave_interval = 0;
+	int autosave_interval;
 
-	Glib::OptionEntry opt_common_name;
-	Glib::OptionEntry opt_common_interactive;
-	Glib::OptionEntry opt_common_autosave_file;
-	Glib::OptionEntry opt_common_autosave_interval;
+	std::string config_file_read;
+	std::string config_file_write;
 
-	Glib::OptionEntry opt_net_port;
+	std::auto_ptr<Config> config;
 
-	Glib::OptionEntry opt_auth_password;
-
-	opt_common_name.set_short_name('n');
-	opt_common_name.set_long_name("name");
-	opt_common_name.set_arg_description("NAME");
-	opt_common_name.set_description("Published server name");
-
-
-	opt_common_interactive.set_short_name('i');
-	opt_common_interactive.set_long_name("interactive");
-	opt_common_interactive.set_description(
-		"Show prompt to enter commands at run-time"
+	// Parse command line once to read config file
+	Glib::OptionEntry opt_config_file_read;
+	opt_config_file_read.set_short_name('c');
+	opt_config_file_read.set_long_name("configfile");
+	opt_config_file_read.set_arg_description("FILE");
+	opt_config_file_read.set_description(
+		"Read FILE for further configuration options"
 	);
 
-	opt_common_autosave_file.set_long_name("autosave-file");
-	opt_common_autosave_file.set_arg_description("FILE");
-	opt_common_autosave_file.set_description(
-		"File where to store autosaved sessions"
+	Glib::OptionGroup opt_group_pre("pre", "You will never see this", "Really.");
+
+	opt_group_pre.add_entry_filename(
+		opt_config_file_read,
+		config_file_read
 	);
 
-	opt_common_autosave_interval.set_long_name("autosave-interval");
-	opt_common_autosave_interval.set_arg_description("INTERVAL");
-	opt_common_autosave_interval.set_description(
-		"Interval (in seconds) between autosaves; 0 disables autosave"
-	);
+	Glib::OptionContext opt_config_ctx;
+	opt_config_ctx.set_help_enabled(false);
+	opt_config_ctx.set_ignore_unknown_options(true);
 
-	opt_net_port.set_short_name('p');
-	opt_net_port.set_long_name("port");
-	opt_net_port.set_arg_description("PORT NUMBER");
-	opt_net_port.set_description(
-		"Port to run the obby server on"
-	);
+	opt_config_ctx.add_group(opt_group_pre);
+	opt_config_ctx.parse(argc, argv);
 
-	opt_auth_password.set_long_name("password");
-	opt_auth_password.set_arg_description("PASSWORD");
-	opt_auth_password.set_description(
-		"Global password required to join the session"
-	);
+	if(!config_file_read.empty() )
+		config.reset(new Config(config_file_read) );
+
+	// Set default options from config
+	if(config.get() != NULL)
+	{
+		Config::ParentEntry& entry = config->get_root()["settings"];
+
+		m_port = entry.get_value<unsigned int>(
+			"port", 6522
+		);
+
+		name = entry.get_value<Glib::ustring>(
+			"name", "Standalone obby server"
+		);
+		//m_interactive = config->get_value<bool>(
+		//	"interactive", false
+		//);
+		autosave_file = entry.get_value<std::string>(
+			"autosave_file", "autosave.obby"
+		);
+		autosave_interval = entry.get_value<unsigned int>(
+			"autosave_interval", 0
+		);
+		password = entry.get_value<Glib::ustring>("password", "");
+	}
+	else
+	{
+		m_port = 6522;
+		name = "Standalone obby server";
+		autosave_file = "autosave.obby";
+		autosave_interval = 0;
+		password = "";
+	}
+
+	// Parse another time to get remaining options
 
 	Glib::OptionGroup opt_group_common("common", "Common options",
 		"General options");
@@ -118,6 +137,55 @@ Sobby::Server::Server(Config& config, int argc, char* argv[]):
 		"Options to set up the network");
 	Glib::OptionGroup opt_group_auth("auth", "Authentication options",
 		"Options to secure the obby server");
+
+	Glib::OptionEntry opt_common_name;
+	opt_common_name.set_short_name('n');
+	opt_common_name.set_long_name("name");
+	opt_common_name.set_arg_description("NAME");
+	opt_common_name.set_description("Published server name");
+
+	Glib::OptionEntry opt_common_interactive;
+	opt_common_interactive.set_short_name('i');
+	opt_common_interactive.set_long_name("interactive");
+	opt_common_interactive.set_description(
+		"Show prompt to enter commands at run-time"
+	);
+
+	Glib::OptionEntry opt_common_autosave_file;
+	opt_common_autosave_file.set_long_name("autosave-file");
+	opt_common_autosave_file.set_arg_description("FILE");
+	opt_common_autosave_file.set_description(
+		"File where to store autosaved sessions"
+	);
+
+	Glib::OptionEntry opt_common_autosave_interval;
+	opt_common_autosave_interval.set_long_name("autosave-interval");
+	opt_common_autosave_interval.set_arg_description("INTERVAL");
+	opt_common_autosave_interval.set_description(
+		"Interval (in seconds) between autosaves; 0 disables autosave"
+	);
+
+	Glib::OptionEntry opt_net_port;
+	opt_net_port.set_short_name('p');
+	opt_net_port.set_long_name("port");
+	opt_net_port.set_arg_description("PORT");
+	opt_net_port.set_description(
+		"Port to run the obby server on"
+	);
+
+	Glib::OptionEntry opt_auth_password;
+	opt_auth_password.set_long_name("password");
+	opt_auth_password.set_arg_description("PASSWORD");
+	opt_auth_password.set_description(
+		"Global password required to join the session"
+	);
+
+	Glib::OptionEntry opt_common_config_file_write;
+	opt_common_config_file_write.set_long_name("write-configfile");
+	opt_common_config_file_write.set_arg_description("FILE");
+	opt_common_config_file_write.set_description(
+		"Store settings into FILE and exit"
+	);
 
 	opt_group_common.add_entry(opt_common_name, name);
 	opt_group_common.add_entry(opt_common_interactive, m_interactive);
@@ -130,6 +198,17 @@ Sobby::Server::Server(Config& config, int argc, char* argv[]):
 	opt_group_common.add_entry(
 		opt_common_autosave_interval,
 		autosave_interval
+	);
+
+	// To display config file in help output
+	opt_group_common.add_entry_filename(
+		opt_config_file_read,
+		config_file_read
+	);
+
+	opt_group_common.add_entry_filename(
+		opt_common_config_file_write,
+		config_file_write
 	);
 
 	opt_group_net.add_entry(opt_net_port, m_port);
@@ -149,57 +228,71 @@ Sobby::Server::Server(Config& config, int argc, char* argv[]):
 	if(argc > 1)
 		session = argv[1];
 
-	Config::ParentEntry& settings = config.get_root()["settings"];
-
-	// Default settings from config if not given by command line
-	// TODO: Should set them before parsing, but the parser seems
-	// to reset the value if the option is not given at all. Patch
+	// Set default settings
+	// TODO: Should set them before parsing, but the parser resets
+	// the value if the option is not given at all. Patch
 	// is committed in glibmm CVS.
-	if(m_port == 0)
+	if(config.get() != NULL)
 	{
-		m_port = settings.supply_value<unsigned int>(
-			"port",
-			6522
-		);
+		Config::ParentEntry& entry = config->get_root()["settings"];
+
+		if(m_port == 0)
+			m_port = entry.get_value<unsigned int>("port", 6522);
+
+		if(name.empty() )
+			name = entry.get_value<std::string>(
+				"name", "Standalone obby server"
+			);
+
+		if(autosave_file.empty() )
+			autosave_file = entry.get_value<std::string>(
+				"autosave_file", "autosave.obby"
+			);
+
+		if(autosave_interval == 0)
+			autosave_interval = entry.get_value<unsigned int>(
+				"autosave_interval", 0
+			);
+
+		if(password.empty() )
+			password = entry.get_value<Glib::ustring>(
+				"password", ""
+			);
+	}
+	else
+	{
+		if(m_port == 0) m_port = 6522;
+		if(name.empty() ) name = "Standalone obby server";
+		if(autosave_file.empty() ) autosave_file = "autosave.obby";
+		if(autosave_interval == 0) autosave_interval = 0;
+		if(password.empty() ) password = "";
 	}
 
-	if(name.empty() )
+	if(!config_file_write.empty() )
 	{
-		name = settings.supply_value<Glib::ustring>(
-			"name",
-			"Standalone obby server"
-		);
+		std::cout << "Sobby " << sobby_version() << " writing "
+		          << "config file " << config_file_write << "..."
+		          << std::endl;
+
+		Config config;
+		Config::ParentEntry& entry = config.get_root()["settings"];
+
+		entry.set_value("port", m_port);
+		entry.set_value("name", name);
+		entry.set_value("autosave_file", autosave_file);
+		entry.set_value("autosave_interval", autosave_interval);
+		entry.set_value("password", password);
+
+		config.save(config_file_write);
+		std::exit(0);
 	}
 
-	if(autosave_file.empty() )
-	{
-		autosave_file = settings.supply_value<Glib::ustring>(
-			"autosave_file",
-			"autosave.obby"
-		);
-	}
-
-	if(autosave_interval == 0) // breaks if config has non-zero value and commandline value is zero!
-	{
-		autosave_interval = settings.supply_value<unsigned int>(
-			"autosave_interval",
-			0
-		);
-	}
-
-	if(password.empty() )
-	{
-		password = settings.supply_value<Glib::ustring>(
-			"password",
-			""
-		);
-	}
+	std::cout << "Sobby " << sobby_version() << " starting up..."
+	          << std::endl;
 
 	// Start server
 	m_server.reset(new ServerBuffer);
 
-	std::cout << "Sobby " << sobby_version() << " starting up..."
-	          << std::endl;
 	if(session == NULL)
 		m_server->open(m_port);
 	else
