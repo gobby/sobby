@@ -69,7 +69,7 @@ Sobby::Server::Server(int argc, char* argv[])
 	opt_common_name.set_description("Published server name");
 
 	opt_common_interactive.set_short_name('i');
-	opt_common_interactive.set_long_name("Interactive");
+	opt_common_interactive.set_long_name("interactive");
 	opt_common_interactive.set_description("Show prompt to enter commands "
 	                                       "at run-time");
 
@@ -111,6 +111,7 @@ Sobby::Server::Server(int argc, char* argv[])
 	// Start server
 	std::cout << "Generating RSA key pair..." << std::endl;
 	m_server.reset(new obby::io::server_buffer(m_port) );
+	m_server->set_global_password(password);
 }
 
 Sobby::Server::~Server()
