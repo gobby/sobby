@@ -1,3 +1,45 @@
+Tue Aug 29 13:32:12 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Bump version to 0.4.1
+
+Tue Aug 29 13:32:06 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Enable distributors to turn off Zeroconf support
+
+Tue Aug 29 12:39:29 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Do not display the outdated codename of obby
+
+Tue Aug 29 12:39:13 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Use the changed define for Zeroconf support
+
+Tue Aug 29 11:21:27 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Update manpage
+
+Tue Aug 29 11:12:07 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Document removal is now broadcasted by obby
+
+Wed Aug 16 14:47:53 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Bump version to 0.4.0rc2 and depend on obby-0.4.0rc4 or higher
+
+Sat May  6 12:44:55 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Check for substrings in Win32 detection
+
+Wed Apr 19 02:47:12 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Adopt the new checking for Zeroconf in obby
+
+Wed Apr 19 01:41:28 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Bump the date of the man page
+
+Wed Apr 19 01:37:40 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Add the session file parameter to the man page
+
+Wed Apr 19 01:13:17 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Broadcast document removals [fixes #143]
+
+Tue Apr 11 14:27:01 CEST 2006  Philipp Kern <phil@0x539.de>
+  tagged sobby-0.4.0rc1
+
+Tue Apr 11 14:26:53 CEST 2006  Philipp Kern <phil@0x539.de>
+  * Updated ChangeLog for release
+
 Tue Apr 11 14:26:34 CEST 2006  Philipp Kern <phil@0x539.de>
   * Bump the version number and temporary remove the NEWS check
 
