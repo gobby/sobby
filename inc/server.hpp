@@ -24,7 +24,7 @@
 #include <glibmm/refptr.h>
 #include <glibmm/main.h>
 #include "buffer_def.hpp"
-#include "config.hpp"
+#include "features.hpp"
 #include "autosaver.hpp"
 #include "command_executer.hpp"
 

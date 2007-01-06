@@ -17,7 +17,7 @@
  */
 
 #include <string>
-#include "config.hpp"
+#include "features.hpp"
 
 extern "C"
 const char* sobby_version()

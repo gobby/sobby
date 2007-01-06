@@ -20,7 +20,7 @@
 #include <glibmm/optionentry.h>
 #include <glibmm/optiongroup.h>
 #include <glibmm/optioncontext.h>
-#include "config.hpp"
+#include "features.hpp"
 #include "server.hpp"
 #include "common.hpp"
 
