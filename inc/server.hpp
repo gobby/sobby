@@ -47,6 +47,9 @@ public:
         void run();
 
 	bool on_cmd_exit(const ArgList& args);
+	bool on_cmd_help(const ArgList& args);
+	bool on_cmd_users(const ArgList& args);
+	bool on_cmd_documents(const ArgList& args);
 protected:
 	virtual bool on_stdin(Glib::IOCondition condition);
 

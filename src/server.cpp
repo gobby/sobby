@@ -29,8 +29,25 @@ namespace
 		static Sobby::Server::CommandMap map;
 
 		map["exit"] = &Sobby::Server::on_cmd_exit;
+		map["help"] = &Sobby::Server::on_cmd_help;
+		map["users"] = &Sobby::Server::on_cmd_users;
+		map["documents"] = &Sobby::Server::on_cmd_documents;
 
 		return map;
+	}
+
+	std::vector<std::string> split(const std::string& line,
+	                               char separator)
+	{
+		std::vector<std::string> res;
+		std::string::size_type pos = 0, prev = 0;
+		while( (pos = line.find(separator, pos)) != std::string::npos)
+		{
+			res.push_back(line.substr(prev, pos - prev) );
+			prev = ++ pos;
+		}
+		res.push_back(line.substr(prev) );
+		return res;
 	}
 }
 
@@ -138,8 +155,15 @@ bool Sobby::Server::on_stdin(Glib::IOCondition condition)
 	// Do not evaluate command if not interactive
 	if(!m_interactive) return true;
 
+	// Get arglist
+	ArgList arglist = split(line, ' ');
+
+	// First is command
+	std::string command = arglist[0];
+	arglist.erase(arglist.begin() );
+
 	// Lookup command in cmdmap
-	CommandMap::const_iterator iter = m_cmd_map.find(line);
+	CommandMap::const_iterator iter = m_cmd_map.find(command);
 	if(iter == m_cmd_map.end() )
 	{
 		// Command not found
@@ -148,9 +172,8 @@ bool Sobby::Server::on_stdin(Glib::IOCondition condition)
 		return true;
 	}
 
-	// TODO: Split into command and arguments, execute command
-	ArgList list;
-	if ((this->*(iter->second))(list) )
+	// Split into command and arguments, execute command
+	if ((this->*(iter->second))(arglist) )
 	{
 		// Reshow prompt
 		std::cout << "sobby > "; std::cout.flush();
@@ -159,10 +182,40 @@ bool Sobby::Server::on_stdin(Glib::IOCondition condition)
 	return true;
 }
 
+bool Sobby::Server::on_cmd_help(const ArgList& args)
+{
+	std::cout << "\thelp           Show this help" << std::endl;
+	std::cout << "\texit           Exits the server" << std::endl;
+	std::cout << "\tusers          Show currently connected users" << std::endl;
+	std::cout << "\tdocuments      Show open documents" << std::endl;
+	return true;
+}
+
 bool Sobby::Server::on_cmd_exit(const ArgList& args)
 {
 	// 'exit'-command: Exit application
 	m_main_loop->quit();
 	return false;
+}
+
+bool Sobby::Server::on_cmd_users(const ArgList& args)
+{
+	const obby::user_table& user_table = m_server->get_user_table();
+	for(obby::user_table::user_iterator<obby::user::CONNECTED, false> iter =
+		user_table.user_begin<obby::user::CONNECTED, false>();
+	    iter != user_table.user_end<obby::user::CONNECTED, false>();
+	    ++ iter)
+		std::cout << " * " << iter->get_name() << std::endl;
+	std::cout << user_table.user_count<obby::user::CONNECTED, false>()
+	          << " users" << std::endl;
+}
+
+bool Sobby::Server::on_cmd_documents(const ArgList& args)
+{
+	for(obby::buffer::document_iterator iter = m_server->document_begin();
+	    iter != m_server->document_end();
+	    ++ iter)
+		std::cout << " * " << iter->get_title() << std::endl;
+	std::cout << m_server->document_count() << " documents" << std::endl;
 }
 
