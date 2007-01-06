@@ -41,11 +41,20 @@ PKG_CHECK_MODULES([sobby], [net6-1.3 obby-0.4 >= 0.4.0rc4
 # Check for howl in libobby.
 AC_CHECK_LIB(obby, obby_has_zeroconf, [obby_has_zeroconf=yes],
              [obby_has_zeroconf=no], [$pkg_cv_sobby_LIBS])
+
+AC_ARG_ENABLE([zeroconf],
+              AS_HELP_STRING([--disable-zeroconf],
+                             [disable Zeroconf support (if present in obby)]),
+              [zeroconf=$withval], [zeroconf=yes])
+zeroconf_enabled=no
 if test "x$ac_cv_lib_obby_obby_has_zeroconf" = "xyes" ; then
-	# obby's pkg-config script takes care of any additional dependencies
-	AC_DEFINE([WITH_ZEROCONF], 1, [Define whether to use Zeroconf])
+  if test "x$zeroconf" = "xyes" ; then
+    # obby's pkg-config control file takes care of any additional dependencies
+    AC_DEFINE([WITH_ZEROCONF], 1, [Define whether to use Zeroconf])
+    zeroconf_enabled=yes
+  fi
 fi
-AM_CONDITIONAL(WITH_ZEROCONF, test x$ac_cv_lib_obby_obby_has_zeroconf = xyes)
+AM_CONDITIONAL(WITH_ZEROCONF, test x$zeroconf_enabled = xyes)
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
