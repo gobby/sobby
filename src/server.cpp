@@ -214,12 +214,12 @@ bool Sobby::Server::on_cmd_exit(const ArgList& args)
 bool Sobby::Server::on_cmd_users(const ArgList& args)
 {
 	const obby::user_table& user_table = m_server->get_user_table();
-	for(obby::user_table::user_iterator<obby::user::CONNECTED, false> iter =
-		user_table.user_begin<obby::user::CONNECTED, false>();
-	    iter != user_table.user_end<obby::user::CONNECTED, false>();
+	for(obby::user_table::iterator iter =
+		user_table.begin(obby::user::flags::CONNECTED, false);
+	    iter != user_table.end(obby::user::flags::CONNECTED, false);
 	    ++ iter)
 		std::cout << " * " << iter->get_name() << std::endl;
-	std::cout << user_table.user_count<obby::user::CONNECTED, false>()
+	std::cout << user_table.count(obby::user::flags::CONNECTED, false)
 	          << " users" << std::endl;
 }
 
