@@ -16,7 +16,14 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+#include <list>
+
+#include <stdexcept>
 #include <glibmm/main.h>
+#include <glibmm/miscutils.h>
 #include "autosaver.hpp"
 
 Sobby::AutoSaver::AutoSaver(const obby::server_buffer& buffer,
@@ -44,7 +51,14 @@ bool Sobby::AutoSaver::on_timer()
 {
 	try
 	{
-		m_buffer.serialise(m_filename);
+		std::list<std::string> list;
+		list.push_back(Glib::get_tmp_dir() );
+		list.push_back("autosave.obby.tmp");
+		std::string tmp_file(Glib::build_filename(list) );
+
+		m_buffer.serialise(tmp_file);
+		if(std::rename(tmp_file.c_str(), m_filename.c_str()) == -1)
+			throw std::runtime_error(std::strerror(errno) );
 	}
 	catch(std::exception& e)
 	{
