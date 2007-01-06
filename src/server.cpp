@@ -318,7 +318,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 
 	m_command_executer.reset(new CommandExecuter(*m_server) );
 
-#ifdef WITH_HOWL
+#ifdef WITH_ZEROCONF
 	try
 	{
 		m_zeroconf.reset(new obby::zeroconf);

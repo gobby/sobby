@@ -29,7 +29,7 @@
 #include "autosaver.hpp"
 #include "command_executer.hpp"
 
-#ifdef WITH_HOWL
+#ifdef WITH_ZEROCONF
 # include <obby/zeroconf.hpp>
 #endif
 
@@ -68,7 +68,7 @@ protected:
 	std::auto_ptr<ServerBuffer> m_server;
 	std::auto_ptr<AutoSaver> m_autosaver;
 	std::auto_ptr<CommandExecuter> m_command_executer;
-#ifdef WITH_HOWL
+#ifdef WITH_ZEROCONF
 	std::auto_ptr<obby::zeroconf> m_zeroconf;
 #endif
 
