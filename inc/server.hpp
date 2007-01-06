@@ -1,5 +1,5 @@
 /* sobby - A standalone server for obby
- * Copyright (C) 2005 0x539 dev group
+ * Copyright (C) 2005, 2006 0x539 dev group
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -26,6 +26,7 @@
 #include "buffer_def.hpp"
 #include "config.hpp"
 #include "autosaver.hpp"
+#include "command_executer.hpp"
 
 #ifdef WITH_HOWL
 # include <obby/zeroconf.hpp>
@@ -63,6 +64,7 @@ protected:
 	Glib::RefPtr<Glib::MainLoop> m_main_loop;
 	std::auto_ptr<ServerBuffer> m_server;
 	std::auto_ptr<AutoSaver> m_autosaver;
+	std::auto_ptr<CommandExecuter> m_command_executer;
 #ifdef WITH_HOWL
 	std::auto_ptr<obby::zeroconf> m_zeroconf;
 #endif

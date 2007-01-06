@@ -1,5 +1,5 @@
 /* sobby - A standalone server for obby
- * Copyright (C) 2005 0x539 dev group
+ * Copyright (C) 2005, 2006 0x539 dev group
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -167,6 +167,8 @@ Sobby::Server::Server(int argc, char* argv[]):
 		m_autosaver->error_event().connect(
 			sigc::mem_fun(*this, &Server::on_autosave_error) );
 	}
+
+	m_command_executer.reset(new CommandExecuter(*m_server) );
 
 #ifdef WITH_HOWL
 	m_zeroconf.reset(new obby::zeroconf);
