@@ -1,0 +1,15 @@
+sobby
+=====
+
+Synopsis
+--------
+sobby is a standalone obby server. It currently runs under Unix-like
+platforms only.
+
+Dependencies
+------------
+ * sigc++-2.0
+ * net6-1.1
+ * obby-0.2
+ * glibmm-2.6
+
