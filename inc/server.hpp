@@ -40,6 +40,8 @@ class Server : private net6::non_copyable,
                public sigc::trackable
 {
 public:
+	class Exit {};
+
 	// TODO: Extra class cmdmap?
 	typedef std::vector<std::string> ArgList;
 	typedef bool(Server::*ArgFunc)(const ArgList&);

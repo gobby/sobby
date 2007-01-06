@@ -284,7 +284,9 @@ Sobby::Server::Server(int argc, char* argv[]):
 		entry.set_value("password", password);
 
 		config.save(config_file_write);
-		std::exit(0);
+
+		// Should be better than calling std::exit() to ensure cleanup
+		throw Exit();
 	}
 
 	std::cout << "Sobby " << sobby_version() << " starting up..."
@@ -325,6 +327,8 @@ Sobby::Server::Server(int argc, char* argv[]):
 Sobby::Server::~Server()
 {
 #ifdef WITH_HOWL
+	// Why does this not happen in obby::zeroconf::~zeroconf?
+	// - armin, 2006-04-09
 	m_zeroconf->unpublish_all();
 #endif
 }

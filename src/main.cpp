@@ -32,6 +32,11 @@ int main(int argc, char* argv[]) try
 	// Success, if no exception has been thrown
 	return EXIT_SUCCESS;
 }
+catch(Sobby::Server::Exit& exit)
+{
+	// Server exit
+	return EXIT_SUCCESS;
+}
 catch(std::exception& e)
 {
 	std::cerr << e.what() << std::endl;
