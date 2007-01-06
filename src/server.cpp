@@ -22,6 +22,7 @@
 #include <glibmm/optioncontext.h>
 #include "config.hpp"
 #include "server.hpp"
+#include "common.hpp"
 
 namespace
 {
@@ -129,8 +130,8 @@ Sobby::Server::~Server()
 
 void Sobby::Server::run()
 {
-	std::cout << "Running obby server " << "0.2.0" /*PACKAGE_VERSION*/
-	          << " on port " << m_port << std::endl;
+	std::cout << "Running obby server " << sobby_version() <<
+		  " on port " << m_port << std::endl;
 
 	if(m_interactive)
 	{
