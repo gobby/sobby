@@ -1,6 +1,14 @@
 sobby
 =====
 
+Version 0.4.0:
+ * XML-based configuration files are now supported (at arbitarary locations)
+ * Configuration files could be written by Sobby with all options
+   passed on the command line to ease their initial creation
+ * Command subsystem added:
+   - Commands could be issues from Gobby's chat console via /command
+   - Removal of documents is implemented through /remove <documentname>
+
 Version 0.3.0:
  * Updated for obby 0.3.0
  * Automatic save of serialised sessions (e.g. for web presentation through
