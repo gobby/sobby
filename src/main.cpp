@@ -16,15 +16,41 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <memory>
 #include <iostream>
 #include <stdexcept>
+#include <signal.h>
 #include <glibmm/exception.h>
+#include <glibmm/miscutils.h>
+#include "config.hpp"
 #include "server.hpp"
+
+namespace
+{
+	std::auto_ptr<Sobby::Config> config;
+}
+
+void sig_int_handler(int signal)
+{
+	// Free config - this makes sure the config is written in case
+	// of SIGINT.
+	config.reset(NULL);
+	// TODO: Should also shutdown server properly?
+	exit(EXIT_SUCCESS);
+}
 
 int main(int argc, char* argv[]) try
 {
+	signal(SIGINT, sig_int_handler);
+
+	// Load config
+	config.reset(
+		new Sobby::Config(Glib::get_home_dir() + "/.sobby/config.xml")
+	);
+
 	// Create server, parse command line options
-	Sobby::Server server(argc, argv);
+	Sobby::Server server(*config, argc, argv);
+
 	// Run it
 	server.run();
 	// Success, if no exception has been thrown
@@ -40,4 +66,3 @@ catch(Glib::Exception& e)
 	std::cerr << e.what() << std::endl;
 	return EXIT_FAILURE;
 }
-

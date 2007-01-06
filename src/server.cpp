@@ -55,8 +55,8 @@ namespace
 
 const Sobby::Server::CommandMap& Sobby::Server::m_cmd_map = create_cmd_map();
 
-Sobby::Server::Server(int argc, char* argv[]):
-	m_main_loop(Glib::MainLoop::create() )
+Sobby::Server::Server(Config& config, int argc, char* argv[]):
+	m_config(config), m_main_loop(Glib::MainLoop::create() )
 {
 	Glib::ustring name;
 	Glib::ustring password;
@@ -125,7 +125,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 
 	opt_group_auth.add_entry(opt_auth_password, password);
 
-	Glib::OptionContext opt_ctx;
+	Glib::OptionContext opt_ctx("- [session]");
 	opt_ctx.set_help_enabled(true);
 
 	opt_ctx.set_main_group(opt_group_common);
@@ -138,10 +138,42 @@ Sobby::Server::Server(int argc, char* argv[]):
 	if(argc > 1)
 		session = argv[1];
 
-	// Default settings
-	if(m_port == 0) m_port = 6522;
-	if(name.empty() ) name = "Standalone obby server";
-	if(autosave_file.empty() ) autosave_file = "autosave.obby";
+	Config::ParentEntry& settings = config.get_root()["settings"];
+
+	// Default settings from config if not given by command line
+	// TODO: Should set them before parsing, but the parser seems
+	// to reset the value if the option is not given at all... :/
+	if(m_port == 0)
+	{
+		m_port = settings.supply_value<unsigned int>(
+			"port",
+			6522
+		);
+	}
+
+	if(name.empty() )
+	{
+		name = settings.supply_value<Glib::ustring>(
+			"name",
+			"Standalone obby server"
+		);
+	}
+
+	if(autosave_file.empty() )
+	{
+		autosave_file = settings.supply_value<Glib::ustring>(
+			"autosave_file",
+			"autosave.obby"
+		);
+	}
+
+	if(password.empty() )
+	{
+		password = settings.supply_value<Glib::ustring>(
+			"password",
+			""
+		);
+	}
 
 	// Start server
 	m_server.reset(new ServerBuffer);

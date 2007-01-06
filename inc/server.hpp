@@ -25,6 +25,7 @@
 #include <glibmm/main.h>
 #include "buffer_def.hpp"
 #include "features.hpp"
+#include "config.hpp"
 #include "autosaver.hpp"
 #include "command_executer.hpp"
 
@@ -44,7 +45,7 @@ public:
 	typedef bool(Server::*ArgFunc)(const ArgList&);
 	typedef std::map<std::string, ArgFunc> CommandMap;
 
-	Server(int argc, char* argv[]);
+	Server(Config& config, int argc, char* argv[]);
 	~Server();
 
         void run();
@@ -57,6 +58,8 @@ protected:
 	virtual bool on_stdin(Glib::IOCondition condition);
 
 	virtual void on_autosave_error(const std::exception& e);
+
+	Config& m_config;
 
 	int m_port;
 	bool m_interactive;
