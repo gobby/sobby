@@ -24,6 +24,7 @@
 #include <glibmm/refptr.h>
 #include <glibmm/main.h>
 #include "io/buffer_wrapper.hpp"
+#include "config.hpp"
 
 #ifdef WITH_HOWL
 # include <obby/zeroconf.hpp>

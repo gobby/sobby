@@ -20,6 +20,7 @@
 #include <glibmm/optionentry.h>
 #include <glibmm/optiongroup.h>
 #include <glibmm/optioncontext.h>
+#include "config.hpp"
 #include "server.hpp"
 
 namespace
@@ -112,10 +113,18 @@ Sobby::Server::Server(int argc, char* argv[])
 	std::cout << "Generating RSA key pair..." << std::endl;
 	m_server.reset(new obby::io::server_buffer(m_port) );
 	m_server->set_global_password(password);
+
+#ifdef WITH_HOWL
+	m_zeroconf.reset(new obby::zeroconf);
+	m_zeroconf->publish(name, m_port);
+#endif
 }
 
 Sobby::Server::~Server()
 {
+#ifdef WITH_HOWL
+	m_zeroconf->unpublish_all();
+#endif
 }
 
 void Sobby::Server::run()
