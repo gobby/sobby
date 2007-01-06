@@ -44,6 +44,15 @@ namespace io
 class client : virtual public net6::client
 {
 public:
+	/** Creates a new client object. A connection may be established
+	 * using the inherited connect() method.
+	 */
+#ifdef WIN32
+	client(Gtk::Window& window);
+#else
+	client();
+#endif
+
 	/** Establishes a new client connection to the given host.
 	 */
 #ifdef WIN32
@@ -53,6 +62,9 @@ public:
 #endif
 	virtual ~client();
 
+	virtual void connect(const net6::address& addr);
+	virtual void disconnect();
+
 	/** Sends a packet to the server.
 	 */
 	virtual void send(const net6::packet& pack);
@@ -60,7 +72,13 @@ public:
 protected:
 	virtual void on_send_event();
 
-	main_connection m_ioconn;
+	std::auto_ptr<main_connection> m_ioconn;
+#ifdef WIN32
+	Gtk::Window& m_window;
+#endif
+private:
+	void connect_impl(const net6::address& addr);
+	void disconnect_impl();
 };
 
 /** The server manages a std::map<> from a peer to its main_connection.
@@ -209,15 +227,19 @@ protected:
 class client_buffer : virtual public obby::client_buffer
 {
 public:
+	typedef client net_type;
+
 #ifdef WIN32
-	client_buffer(Gtk::Window& window, const Glib::ustring& hostname,
-	             unsigned int port);
+	client_buffer(Gtk::Window& window);
 #else
-	client_buffer(const Glib::ustring& hostname, unsigned int port);
+	client_buffer();
 #endif
-	virtual ~client_buffer();
 
 protected:
+#ifdef WIN32
+	Gtk::Window& m_window;
+#endif
+	virtual net_type* new_net();
 };
 
 /** A obby::server_buffer derived class that uses io::server.
@@ -225,34 +247,41 @@ protected:
 class server_buffer : virtual public obby::server_buffer
 {
 public:
+	typedef server net_type;
+
 #ifdef WIN32
-	server_buffer(Gtk::Window& window, unsigned int port);
+	server_buffer(Gtk::Window& window);
 #else
-	server_buffer(unsigned int port);
+	server_buffer();
 #endif
-	virtual ~server_buffer();
 
 protected:
-	server_buffer();
+#ifdef WIN32
+	Gtk::Window& m_window;
+#endif
+	net_type* new_net(unsigned int port);
 };
 
 /** A obby::host_buffer derived class that uses io::host.
  */
 
-class host_buffer : virtual public obby::host_buffer
+class host_buffer : virtual public obby::host_buffer,
+                    virtual public server_buffer
 {
 public:
+	typedef host net_type;
+
 #ifdef WIN32
-	host_buffer(Gtk::Window& window, unsigned int port,
-	           const Glib::ustring& username, int red, int green, int blue);
+	host_buffer(Gtk::Window& window
+	            const Glib::ustring& username,
+	            const colour& colour);
 #else
-	host_buffer(unsigned int port, const Glib::ustring& username, int red,
-	            int green, int blue);
+	host_buffer(const Glib::ustring& username,
+	            const colour& colour);
 #endif
-	virtual ~host_buffer();
 
 protected:
-	host_buffer();
+	net_type* new_net(unsigned int port);
 };
 
 } // namespace io
