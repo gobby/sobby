@@ -9,7 +9,7 @@ platforms only.
 Dependencies
 ------------
  * sigc++-2.0
- * net6-1.1
- * obby-0.2
+ * net6-1.2
+ * obby-0.3
  * glibmm-2.6
 
