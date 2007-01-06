@@ -51,14 +51,16 @@ bool Sobby::AutoSaver::on_timer()
 {
 	try
 	{
-		std::list<std::string> list;
+		/*std::list<std::string> list;
 		list.push_back(Glib::get_tmp_dir() );
 		list.push_back("autosave.obby.tmp");
 		std::string tmp_file(Glib::build_filename(list) );
 
 		m_buffer.serialise(tmp_file);
 		if(std::rename(tmp_file.c_str(), m_filename.c_str()) == -1)
-			throw std::runtime_error(std::strerror(errno) );
+			throw std::runtime_error(std::strerror(errno) );*/
+
+		m_buffer.serialise(m_filename);
 	}
 	catch(std::exception& e)
 	{
