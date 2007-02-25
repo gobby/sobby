@@ -17,6 +17,7 @@
  */
 
 #include <iostream>
+#include <glibmm/fileutils.h>
 #include <glibmm/optionentry.h>
 #include <glibmm/optiongroup.h>
 #include <glibmm/optioncontext.h>
@@ -297,9 +298,39 @@ Sobby::Server::Server(int argc, char* argv[]):
 	m_server->set_enable_keepalives(true);
 
 	if(session == NULL)
+	{
 		m_server->open(m_port);
+	}
 	else
-		m_server->open(session, m_port);
+	{
+		try
+		{
+			m_server->open(session, m_port);
+		}
+		catch(std::exception& e)
+		{
+			// It is not an obby session file, so load it as
+			// normal document.
+			if(m_server->is_open()) m_server->close();
+			m_server->open(m_port);
+
+			for(int i = 1; i < argc; ++ i)
+			{
+				std::string content = Glib::file_get_contents(
+					argv[i]
+				);
+
+				if(!g_utf8_validate(content.c_str(), content.length(), NULL))
+				{
+					obby::format_string errstring("The file '%0%' does not contain valid UTF-8. Please convert it to UTF-8 before loading it into sobby.");
+					errstring << argv[i];
+					throw std::runtime_error(errstring.str());
+				}
+
+				m_server->document_create(argv[i], "UTF-8", content);
+			}
+		}
+	}
 
 	m_server->set_global_password(password);
 
