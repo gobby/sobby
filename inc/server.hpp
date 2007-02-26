@@ -27,6 +27,7 @@
 #include "features.hpp"
 #include "config.hpp"
 #include "autosaver.hpp"
+#include "autosave_folder.hpp"
 #include "command_executer.hpp"
 
 #ifdef WITH_ZEROCONF
@@ -67,6 +68,7 @@ protected:
 	Glib::RefPtr<Glib::MainLoop> m_main_loop;
 	std::auto_ptr<ServerBuffer> m_server;
 	std::auto_ptr<AutoSaver> m_autosaver;
+	std::auto_ptr<AutoSaveFolder> m_autosave_folder;
 	std::auto_ptr<CommandExecuter> m_command_executer;
 #ifdef WITH_ZEROCONF
 	std::auto_ptr<obby::zeroconf> m_zeroconf;

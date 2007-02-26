@@ -65,6 +65,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 	const char* session = NULL;
 
 	std::string autosave_file;
+	std::string autosave_folder;
 	int autosave_interval;
 
 	std::string config_file_read;
@@ -113,9 +114,15 @@ Sobby::Server::Server(int argc, char* argv[]):
 		//m_interactive = config->get_value<bool>(
 		//	"interactive", false
 		//);
+
+		autosave_folder = entry.get_value<std::string>(
+			"autosave_directory", ""
+		);
+
 		autosave_file = entry.get_value<std::string>(
 			"autosave_file", "autosave.obby"
 		);
+
 		autosave_interval = entry.get_value<unsigned int>(
 			"autosave_interval", 0
 		);
@@ -125,6 +132,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 	{
 		m_port = 6522;
 		name = "Standalone obby server";
+		autosave_folder = "";
 		autosave_file = "autosave.obby";
 		autosave_interval = 0;
 		password = "";
@@ -152,11 +160,19 @@ Sobby::Server::Server(int argc, char* argv[]):
 		"Show prompt to enter commands at run-time"
 	);
 
+	Glib::OptionEntry opt_common_autosave_folder;
+	opt_common_autosave_folder.set_long_name("autosave-directory");
+	opt_common_autosave_folder.set_arg_description("FOLDER");
+	opt_common_autosave_folder.set_description(
+		"Folder where to store autosaved documents. "
+	);
+
 	Glib::OptionEntry opt_common_autosave_file;
 	opt_common_autosave_file.set_long_name("autosave-file");
 	opt_common_autosave_file.set_arg_description("FILE");
 	opt_common_autosave_file.set_description(
-		"File where to store autosaved sessions"
+		"File where to store autosaved sessions. "
+		"Ignored if autosave-directory is set."
 	);
 
 	Glib::OptionEntry opt_common_autosave_interval;
@@ -192,6 +208,11 @@ Sobby::Server::Server(int argc, char* argv[]):
 	opt_group_common.add_entry(opt_common_interactive, m_interactive);
 
 	opt_group_common.add_entry_filename(
+		opt_common_autosave_folder,
+		autosave_folder
+	);
+
+	opt_group_common.add_entry_filename(
 		opt_common_autosave_file,
 		autosave_file
 	);
@@ -216,7 +237,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 
 	opt_group_auth.add_entry(opt_auth_password, password);
 
-	Glib::OptionContext opt_ctx("[session]");
+	Glib::OptionContext opt_ctx("[file1 or session] [file2] [...]");
 	opt_ctx.set_help_enabled(true);
 
 	opt_ctx.set_main_group(opt_group_common);
@@ -245,6 +266,11 @@ Sobby::Server::Server(int argc, char* argv[]):
 				"name", "Standalone obby server"
 			);
 
+		if(autosave_folder.empty())
+			autosave_folder = entry.get_value<std::string>(
+				"autosave_directory", ""
+			);
+
 		if(autosave_file.empty() )
 			autosave_file = entry.get_value<std::string>(
 				"autosave_file", "autosave.obby"
@@ -264,6 +290,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 	{
 		if(m_port == 0) m_port = 6522;
 		if(name.empty() ) name = "Standalone obby server";
+		if(autosave_folder.empty()) autosave_folder = "";
 		if(autosave_file.empty() ) autosave_file = "autosave.obby";
 		if(autosave_interval == 0) autosave_interval = 0;
 		if(password.empty() ) password = "";
@@ -281,6 +308,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 		entry.set_value("port", m_port);
 		entry.set_value("name", name);
 		entry.set_value("autosave_file", autosave_file);
+		entry.set_value("autosave_directory", autosave_folder);
 		entry.set_value("autosave_interval", autosave_interval);
 		entry.set_value("password", password);
 
@@ -336,16 +364,39 @@ Sobby::Server::Server(int argc, char* argv[]):
 
 	if(autosave_interval > 0)
 	{
-		m_autosaver.reset(
-			new AutoSaver(
-				*m_server,
-				autosave_file,
-				autosave_interval
-			)
-		);
+		if(autosave_folder.empty())
+		{
+			m_autosaver.reset(
+				new AutoSaver(
+					*m_server,
+					autosave_file,
+					autosave_interval
+				)
+			);
 
-		m_autosaver->error_event().connect(
-			sigc::mem_fun(*this, &Server::on_autosave_error) );
+			m_autosaver->error_event().connect(
+				sigc::mem_fun(*this, &Server::on_autosave_error) );
+		}
+		else
+		{
+			if(!Glib::file_test(autosave_folder, Glib::FILE_TEST_IS_DIR))
+			{
+				obby::format_string str("'%0%' is not a directory");
+				str << autosave_folder;
+				throw std::runtime_error(str.str()); 
+			}
+
+			m_autosave_folder.reset(
+				new AutoSaveFolder(
+					*m_server,
+					autosave_folder,
+					autosave_interval
+				)
+			);
+
+			m_autosave_folder->error_event().connect(
+				sigc::mem_fun(*this, &Server::on_autosave_error) );
+		}
 	}
 
 	m_command_executer.reset(new CommandExecuter(*m_server) );
