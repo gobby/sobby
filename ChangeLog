@@ -1,3 +1,11 @@
+2007-02-25  Armin Burgmeier  <armin@0x539.de>
+
+	* inc/autosave_folder.hpp:
+	* src/autosave_folder.cpp: Implemented autosave of individual
+	documents into a directory.
+
+	* src/server.cpp: Recognize --autosave-directory option.
+
 2006-11-08  Armin Burgmeier <armin@0x539.de>
 
 	Enable sending keepalives on idle connections
