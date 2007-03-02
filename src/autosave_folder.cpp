@@ -87,13 +87,20 @@ bool Sobby::AutoSaveFolder::on_timer()
 			m_map[iter->first] = false;
 
 			std::string content = iter->first->get_content().get_text();
-			std::string filename = Glib::build_filename(m_folder, iter->first->get_title());
+			std::string filename = iter->first->get_title();
+			std::string::size_type pos = filename.rfind('/');
+			if(pos != std::string::npos)
+				filename = filename.substr(pos + 1);
 
-			std::ofstream stream(filename.c_str());
+			std::string path = Glib::build_filename(m_folder, filename);
+
+			// TODO: Use IOChannels here to get filename encoding
+			// right?
+			std::ofstream stream(path.c_str());
 			if(!stream)
 			{
 				obby::format_string str("Could not open output file '%0%' for writing");
-				str << filename;
+				str << path;
 				throw std::runtime_error(str.str());
 			}
 

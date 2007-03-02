@@ -1,3 +1,9 @@
+2007-03-02  Armin Burgmeier  <armin@0x539.de>
+
+	* src/autosave_folder.cpp: If a document's title has a slash in it,
+	only take the part behind the last slash as filename to autosave to
+	prevent doubledot attacks.
+
 2007-03-02  Philipp Kern <phil@0x539.de>
 
 	* NEWS, configure.ac: Bump version to 0.4.2, document changes.
