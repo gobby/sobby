@@ -1,3 +1,8 @@
+2007-03-02  Philipp Kern <phil@0x539.de>
+
+	* NEWS, configure.ac: Bump version to 0.4.2, document changes.
+	* sobby.1: Document the new --autosave-directory option.
+
 2007-02-25  Armin Burgmeier  <armin@0x539.de>
 
 	* inc/autosave_folder.hpp:

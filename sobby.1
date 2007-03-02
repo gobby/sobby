@@ -45,7 +45,11 @@ file and exit
 File where to store autosaved sessions
 .TP
 .B \-\-autosave\-interval=INTERVAL
-Interval (in seconds) between autosaves; 0 disables them
+Interval (in seconds) between autosaves, 0 disables them; the presence
+of \-\-autosave\-directory automatically disables this option
+.TP
+.B \-\-autosave\-directory=DIRECTORY
+Directory where to autosave all individual files of a session
 .TP
 .B session file
 File to restore the session from, together with all documents stored therein

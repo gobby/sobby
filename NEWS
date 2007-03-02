@@ -1,6 +1,10 @@
 sobby
 =====
 
+Version 0.4.2:
+ * Autosave of all invididual files of a session into a specified directory
+ * Enabled keepalive to detect stale connections
+
 Version 0.4.0:
  * XML-based configuration files are now supported (at arbitarary locations)
  * Configuration files could be written by Sobby with all options
