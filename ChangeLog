@@ -1,3 +1,7 @@
+2007-03-18  Philipp Kern <phil@0x539.de>
+
+	* configure.ac: Change obby dependency to `>= 0.4.3'. [fixes #249]
+
 2007-03-02  Armin Burgmeier  <armin@0x539.de>
 
 	* src/autosave_folder.cpp: If a document's title has a slash in it,
