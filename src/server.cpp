@@ -127,6 +127,10 @@ Sobby::Server::Server(int argc, char* argv[]):
 			"autosave_interval", 0
 		);
 		password = entry.get_value<Glib::ustring>("password", "");
+
+		m_command_dir = entry.get_value<Glib::ustring>(
+			"command_directory", ""
+		);
 	}
 	else
 	{
@@ -136,6 +140,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 		autosave_file = "autosave.obby";
 		autosave_interval = 0;
 		password = "";
+		m_command_dir = "";
 	}
 
 	// Parse another time to get remaining options
@@ -182,6 +187,14 @@ Sobby::Server::Server(int argc, char* argv[]):
 		"Interval (in seconds) between autosaves; 0 disables autosave"
 	);
 
+	Glib::OptionEntry opt_common_command_dir;
+	opt_common_command_dir.set_long_name("command-directory");
+	opt_common_command_dir.set_arg_description("DIRECTORY");
+	opt_common_command_dir.set_description(
+		"Directory where to find executable scripts which clients "
+		"might execute"
+	);
+
 	Glib::OptionEntry opt_net_port;
 	opt_net_port.set_short_name('p');
 	opt_net_port.set_long_name("port");
@@ -220,6 +233,11 @@ Sobby::Server::Server(int argc, char* argv[]):
 	opt_group_common.add_entry(
 		opt_common_autosave_interval,
 		autosave_interval
+	);
+
+	opt_group_common.add_entry_filename(
+		opt_common_command_dir,
+		m_command_dir
 	);
 
 	// To display config file in help output
@@ -285,6 +303,11 @@ Sobby::Server::Server(int argc, char* argv[]):
 			password = entry.get_value<Glib::ustring>(
 				"password", ""
 			);
+
+		if(m_command_dir.empty())
+			m_command_dir = entry.get_value<Glib::ustring>(
+				"command_directory", ""
+			);
 	}
 	else
 	{
@@ -294,6 +317,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 		if(autosave_file.empty() ) autosave_file = "autosave.obby";
 		if(autosave_interval == 0) autosave_interval = 0;
 		if(password.empty() ) password = "";
+		if(m_command_dir.empty()) m_command_dir = "";
 	}
 
 	if(!config_file_write.empty() )
@@ -311,6 +335,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 		entry.set_value("autosave_directory", autosave_folder);
 		entry.set_value("autosave_interval", autosave_interval);
 		entry.set_value("password", password);
+		entry.set_value("command_directory", m_command_dir);
 
 		config.save(config_file_write);
 
@@ -399,7 +424,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 		}
 	}
 
-	m_command_executer.reset(new CommandExecuter(*m_server) );
+	m_command_executer.reset(new CommandExecuter(*this, *m_server) );
 
 #ifdef WITH_ZEROCONF
 	try
@@ -556,4 +581,9 @@ bool Sobby::Server::on_cmd_documents(const ArgList& args)
 
 	std::cout << m_server->document_count() << " documents" << std::endl;
 	return true;
+}
+
+const std::string& Sobby::Server::get_command_dir() const
+{
+	return m_command_dir;
 }

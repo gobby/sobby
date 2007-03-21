@@ -57,6 +57,8 @@ public:
 	bool on_cmd_help(const ArgList& args);
 	bool on_cmd_users(const ArgList& args);
 	bool on_cmd_documents(const ArgList& args);
+
+	const std::string& get_command_dir() const;
 protected:
 	virtual bool on_stdin(Glib::IOCondition condition);
 
@@ -64,6 +66,7 @@ protected:
 
 	int m_port;
 	bool m_interactive;
+	std::string m_command_dir;
 
 	Glib::RefPtr<Glib::MainLoop> m_main_loop;
 	std::auto_ptr<ServerBuffer> m_server;

@@ -28,16 +28,24 @@
 namespace Sobby
 {
 
+class Server;
+
 class CommandExecuter: public sigc::trackable, private net6::non_copyable
 {
 public:
-	CommandExecuter(ServerBuffer& buffer);
+	CommandExecuter(const Server& server, ServerBuffer& buffer);
 
 protected:
 	obby::command_result on_remove(const obby::user& from,
 	                               const std::string& paramlist);
+	obby::command_result on_command(const obby::user& from,
+	                                const std::string& paramlist);
 
 	ServerBuffer& m_buffer;
+	const Server& m_server;
+
+	std::map<int, std::string> m_command_out;
+	bool on_out(Glib::IOCondition cond, int fd);
 };
 
 }
