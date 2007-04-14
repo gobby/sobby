@@ -1,5 +1,9 @@
 2007-04-14  Armin Burgmeier  <armin@0x539.de>
 
+	* src/server.hpp: Fix parameter order for timeout connection.
+
+2007-04-14  Armin Burgmeier  <armin@0x539.de>
+
 	* inc/server.hpp:
 	* src/server.cpp: Use AvahiGLibPoll if zeroconf backend is Avahi.
 

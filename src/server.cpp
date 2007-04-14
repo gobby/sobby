@@ -438,7 +438,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 #else
 		m_zeroconf.reset(new obby::zeroconf);
 		// Process zeroconf events periodically
-		Glib::signal_timeout().connect(1500, sigc::bind(sigc::mem_fun(*m_zeroconf.get(), &obby::zeroconf_base::select), 0));
+		Glib::signal_timeout().connect(sigc::bind(sigc::mem_fun(*m_zeroconf.get(), &obby::zeroconf_base::select), 0), 1500);
 #endif
 		m_zeroconf->publish(name, m_port);
 	}
