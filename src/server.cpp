@@ -59,6 +59,9 @@ const Sobby::Server::CommandMap& Sobby::Server::m_cmd_map = create_cmd_map();
 Sobby::Server::Server(int argc, char* argv[]):
 	m_interactive(false),
 	m_main_loop(Glib::MainLoop::create() )
+#ifdef WITH_AVAHI
+	,m_glib_poll(NULL)
+#endif
 {
 	Glib::ustring name;
 	Glib::ustring password;
@@ -429,11 +432,19 @@ Sobby::Server::Server(int argc, char* argv[]):
 #ifdef WITH_ZEROCONF
 	try
 	{
+#ifdef WITH_AVAHI
+		m_glib_poll = avahi_glib_poll_new(NULL, G_PRIORITY_DEFAULT);
+		m_zeroconf.reset(new obby::zeroconf_avahi(avahi_glib_poll_get(m_glib_poll)));
+#else
 		m_zeroconf.reset(new obby::zeroconf);
+		// Process zeroconf events periodically
+		Glib::signal_timeout().connect(1500, sigc::bind(sigc::mem_fun(*m_zeroconf.get(), &obby::zeroconf_base::select), 0));
+#endif
 		m_zeroconf->publish(name, m_port);
 	}
 	catch(std::runtime_error&)
 	{
+		// TODO: Adjust this message for Avahi
 		std::cerr << "ERROR: Howl initialisation failed. Please run "
 		          << "mDNSResponder prior to Sobby." << std::endl;
 		std::cerr << "       Zeroconf support is thus deactivated for "
@@ -445,6 +456,12 @@ Sobby::Server::Server(int argc, char* argv[]):
 
 Sobby::Server::~Server()
 {
+#ifdef WITH_AVAHI
+	if(m_glib_poll != NULL)
+	{
+		avahi_glib_poll_free(m_glib_poll);
+	}
+#endif
 }
 
 void Sobby::Server::run()

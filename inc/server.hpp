@@ -34,6 +34,11 @@
 # include <obby/zeroconf.hpp>
 #endif
 
+#ifdef WITH_AVAHI
+# include <obby/zeroconf_avahi.hpp>
+# include <avahi-glib/glib-watch.h>
+#endif
+
 namespace Sobby
 {
 
@@ -74,7 +79,10 @@ protected:
 	std::auto_ptr<AutoSaveFolder> m_autosave_folder;
 	std::auto_ptr<CommandExecuter> m_command_executer;
 #ifdef WITH_ZEROCONF
-	std::auto_ptr<obby::zeroconf> m_zeroconf;
+	std::auto_ptr<obby::zeroconf_base> m_zeroconf;
+#endif
+#ifdef WITH_AVAHI
+	AvahiGLibPoll* m_glib_poll;
 #endif
 
 	static const CommandMap& m_cmd_map;
