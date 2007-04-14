@@ -1,6 +1,14 @@
 bin_PROGRAMS    = sobby
 sobby_LDADD     = $(sobby_LIBS)
 sobby_CPPFLAGS  = $(sobby_CFLAGS) -I../inc/
+
+if WITH_ZEROCONF
+if WITH_AVAHI
+sobby_LDADD += $(avahi_LIBS)
+sobby_CPPFLAGS += $(avahi_CFLAGS)
+endif
+endif
+
 noinst_HEADERS  = inc/gselector.hpp
 noinst_HEADERS += inc/config.hpp
 noinst_HEADERS += inc/buffer_def.hpp
