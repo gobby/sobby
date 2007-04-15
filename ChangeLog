@@ -1,3 +1,7 @@
+2007-04-15  Philipp Kern <phil@0x539.de>
+
+	* src/server.cpp: adjust Zeroconf failure message for Avahi
+
 2007-04-15  Phliipp Kern <phil@0x539.de>
 
 	* configure.ac, NEWS: version bump to 0.4.3, changes documented

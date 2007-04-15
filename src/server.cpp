@@ -445,8 +445,13 @@ Sobby::Server::Server(int argc, char* argv[]):
 	catch(std::runtime_error&)
 	{
 		// TODO: Adjust this message for Avahi
+#ifdef WITH_AVAHI
+		std::cerr << "ERROR: Avahi initialisation failed. Please run "
+		          << "avahi-daemon prior to Sobby." << std::endl;
+#else
 		std::cerr << "ERROR: Howl initialisation failed. Please run "
 		          << "mDNSResponder prior to Sobby." << std::endl;
+#endif
 		std::cerr << "       Zeroconf support is thus deactivated for "
 		          << "this session." << std::endl;
 		m_zeroconf.reset();
