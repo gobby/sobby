@@ -1,6 +1,11 @@
 sobby
 =====
 
+Version 0.4.3:
+ * Support for command directories from which executables could be called
+   via Sobby commands
+ * Avahi support
+
 Version 0.4.2:
  * Autosave of all invididual files of a session into a specified directory
  * Enabled keepalive to detect stale connections
