@@ -444,7 +444,6 @@ Sobby::Server::Server(int argc, char* argv[]):
 	}
 	catch(std::runtime_error&)
 	{
-		// TODO: Adjust this message for Avahi
 #ifdef WITH_AVAHI
 		std::cerr << "ERROR: Avahi initialisation failed. Please run "
 		          << "avahi-daemon prior to Sobby." << std::endl;
