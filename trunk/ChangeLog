@@ -1,0 +1,314 @@
+2007-04-15  Philipp Kern <phil@0x539.de>
+
+	* src/server.cpp: adjust Zeroconf failure message for Avahi
+
+2007-04-15  Phliipp Kern <phil@0x539.de>
+
+	* configure.ac, NEWS: version bump to 0.4.3, changes documented
+
+2007-04-14  Armin Burgmeier  <armin@0x539.de>
+
+	* src/server.hpp: Fix parameter order for timeout connection.
+
+2007-04-14  Armin Burgmeier  <armin@0x539.de>
+
+	* inc/server.hpp:
+	* src/server.cpp: Use AvahiGLibPoll if zeroconf backend is Avahi.
+
+2007-04-14  Philipp Kern <phil@0x539.de>
+
+	* configure.ac, Makefile.am: check for Avahi in obby and link against
+	  avahi-glib if Avahi proper is used for Zeroconf support; provide
+	  an additional define WITH_AVAHI for usage within the code
+
+2007-03-21  Armin Burgmeier  <armin@0x539.de>
+
+	* src/server.hpp:
+	* src/command_executer.hpp:
+	* src/server.cpp:
+	* src/command_executer.cpp: Added --command-directory command line
+	option and /command command that executes an executable in the command
+	directory.
+
+2007-03-18  Philipp Kern <phil@0x539.de>
+
+	* configure.ac: Change obby dependency to `>= 0.4.3'. [fixes #249]
+
+2007-03-02  Armin Burgmeier <armin@0x539.de>
+
+	* src/autosave_folder.cpp: If a document's title has a slash in it,
+	only take the part behind the last slash as filename to autosave to
+	prevent doubledot attacks.
+
+2007-03-02  Philipp Kern <phil@0x539.de>
+
+	* NEWS, configure.ac: Bump version to 0.4.2, document changes.
+	* sobby.1: Document the new --autosave-directory option.
+
+2007-02-25  Armin Burgmeier  <armin@0x539.de>
+
+	* inc/autosave_folder.hpp:
+	* src/autosave_folder.cpp: Implemented autosave of individual
+	documents into a directory.
+
+	* src/server.cpp: Recognize --autosave-directory option.
+
+2006-11-08  Armin Burgmeier <armin@0x539.de>
+
+	Enable sending keepalives on idle connections
+
+2006-08-30  Philipp Kern <phil@0x539.de>
+
+	GCC 3.3 compile fix
+
+2006-08-29  Philipp Kern <phil@0x539.de>
+
+	Updated ChangeLog for release
+
+2006-08-29  Philipp Kern <phil@0x539.de>
+
+	Bump version to 0.4.1
+
+2006-08-29  Philipp Kern <phil@0x539.de>
+
+	Enable distributors to turn off Zeroconf support
+
+2006-08-29  Philipp Kern <phil@0x539.de>
+
+	Do not display the outdated codename of obby
+
+2006-08-29  Philipp Kern <phil@0x539.de>
+
+	Use the changed define for Zeroconf support
+
+2006-08-29  Philipp Kern <phil@0x539.de>
+
+	Update manpage
+
+2006-08-29  Philipp Kern <phil@0x539.de>
+
+	Document removal is now broadcasted by obby
+
+2006-08-16  Philipp Kern <phil@0x539.de>
+
+	Bump version to 0.4.0rc2 and depend on obby-0.4.0rc4 or higher
+
+2006-05-06  Philipp Kern <phil@0x539.de>
+
+	Check for substrings in Win32 detection
+
+2006-04-19  Philipp Kern <phil@0x539.de>
+
+	Adopt the new checking for Zeroconf in obby
+
+2006-04-18  Philipp Kern <phil@0x539.de>
+
+	Bump the date of the man page
+
+2006-04-18  Philipp Kern <phil@0x539.de>
+
+	Add the session file parameter to the man page
+
+2006-04-18  Philipp Kern <phil@0x539.de>
+
+	Broadcast document removals [fixes #143]
+
+2006-04-11  Philipp Kern <phil@0x539.de>
+
+	Updated ChangeLog for release
+
+2006-04-11  Philipp Kern <phil@0x539.de>
+
+	Bump the version number and temporary remove the NEWS check
+
+2006-04-10  Philipp Kern <phil@0x539.de>
+
+	NEWS item added
+
+2006-04-10  Philipp Kern <phil@0x539.de>
+
+	Do not kill the server if Zeroconf initialisation fails
+
+2006-04-09  Armin Burgmeier <armin@0x539.de>
+
+	Throw Server::Exit instead of calling std::exit() with
+	--write-configfile
+
+2006-03-31  Philipp Kern <phil@0x539.de>
+
+	Install the manual page
+
+2006-03-31  Philipp Kern <phil@0x539.de>
+
+	Add an updated manual page
+
+2006-03-30  Armin Burgmeier <armin@0x539.de>
+
+	Specify config file on commandline
+
+2006-03-30  Armin Burgmeier <armin@0x539.de>
+
+	Set argument description for commandline arguments
+
+2006-03-30  Armin Burgmeier <armin@0x539.de>
+
+	Store autosave interval in config
+
+2006-03-29  Armin Burgmeier <armin@0x539.de>
+
+	Configuration file support [fixes #128]
+
+2006-03-29  Philipp Kern <phil@0x539.de>
+
+	Update version presentation on startup
+
+2006-03-29  Philipp Kern <phil@0x539.de>
+
+	Replace config.hpp with features.hpp; depend on libxml++ and
+	newer net6/obby
+
+2006-03-29  Philipp Kern <phil@0x539.de>
+
+	Bump the version to 0.3.99
+
+2006-03-28  Armin Burgmeier <armin@0x539.de>
+
+	Added CommandExecuter with initial remove command [fixes #137]
+
+2006-03-28  Armin Burgmeier <armin@0x539.de>
+
+	Made Sobby compile again
+
+2006-03-06  Philipp Kern <phil@0x539.de>
+
+	Add maintainer mode to Sobby's configure script
+
+2006-02-02  Armin Burgmeier <armin@0x539.de>
+
+	Changed buffer wrapper to match obby's new_net()
+
+2006-01-29  Armin Burgmeier <armin@0x539.de>
+
+	Adjusted buffer wrappers for new net6 io conditions
+
+2005-11-22  Armin Burgmeier <armin@0x539.de>
+
+	Removed covariant returns in buffer wrapper
+
+2005-11-19  Armin Burgmeier <armin@0x539.de>
+
+	Updated README for net6-1.2 and obby-0.3
+
+2005-11-19  Armin Burgmeier <armin@0x539.de>
+
+	Removed atomic write, too, as in Gobby
+
+2005-11-15  Philipp Kern <phil@0x539.de>
+
+	Fix some permissions in the dist-hook
+
+2005-11-15  Philipp Kern <phil@0x539.de>
+
+	Updated NEWS
+
+2005-11-04  Armin Burgmeier <armin@0x539.de>
+
+	Adjustment for new inc_flags/exc_flags
+
+2005-11-03  Armin Burgmeier <armin@0x539.de>
+
+	Accept session file to open as command line parameter
+
+2005-11-03  Armin Burgmeier <armin@0x539.de>
+
+	Do not use IPv6 when opening a server
+
+2005-11-03  Armin Burgmeier <armin@0x539.de>
+
+	Write autosave contents in temp dir and rename atomically
+	after success
+
+2005-11-03  Armin Burgmeier <armin@0x539.de>
+
+	Display only command instead of whole line when command not found
+
+2005-11-03  Armin Burgmeier <armin@0x539.de>
+
+	Added AutoSaver
+
+2005-11-03  Armin Burgmeier <armin@0x539.de>
+
+	Adapted buffer_wrapper from gobby
+
+2005-11-03  Philipp Kern <phil@0x539.de>
+
+	Added missing {inc,src}/common.{hpp,cpp}
+
+2005-10-01  Philipp Kern <phil@0x539.de>
+
+	Display version correctly
+
+2005-10-01  Philipp Kern <phil@0x539.de>
+
+	Ported Sobby to obby 0.3.0
+
+2005-07-29  Philipp Kern <phil@0x539.de>
+
+	Updated ChangeLog for release
+
+2005-07-29  Philipp Kern <phil@0x539.de>
+
+	Only query stdin when m_interactive is set
+
+2005-07-29  Philipp Kern <phil@0x539.de>
+
+	Added Zeroconf support
+
+2005-07-29  Philipp Kern <phil@0x539.de>
+
+	Fixed typo and password authentication
+
+2005-07-29  Philipp Kern <phil@0x539.de>
+
+	Added content to README
+
+2005-07-29  Philipp Kern <phil@0x539.de>
+
+	Added content into NEWS
+
+2005-07-29  Philipp Kern <phil@0x539.de>
+
+	Added content into AUTHORS
+
+2005-07-29  Armin Burgmeier <armin@0x539.de>
+
+	Some initial commands
+
+2005-07-29  Armin Burgmeier <armin@0x539.de>
+
+	Optional interactive flag
+
+2005-07-28  Armin Burgmeier <armin@0x539.de>
+
+	Command line interface
+
+2005-07-28  Armin Burgmeier <armin@0x539.de>
+
+	Added src/io/main_connection_generic.cpp to Makefile.am
+
+2005-07-28  Philipp Kern <phil@0x539.de>
+
+	Autotoolised sobby
+
+2005-07-27  Armin Burgmeier <armin@0x539.de>
+
+	Initial sobby
+
+2005-07-27  Armin Burgmeier <armin@0x539.de>
+
+	Added io/
+
+2005-07-27  Philipp Kern <phil@0x539.de>
+
+	Added the initial directories
+
