@@ -1,3 +1,7 @@
+2007-05-21  Armin Burgmeier  <armin@0x539.de>
+
+	* src/command_executer.cpp: Parse argument list in remove command.
+
 2007-04-15  Philipp Kern <phil@0x539.de>
 
 	* src/server.cpp: adjust Zeroconf failure message for Avahi

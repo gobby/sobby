@@ -58,7 +58,7 @@ obby::command_result Sobby::CommandExecuter::
 	try
 	{
 		obby::command_context_from<DocumentInfo*> ctx(m_buffer);
-		DocumentInfo* info = ctx.from_string(paramlist);
+		DocumentInfo* info = ctx.from_string(list.value(0));
 
 		m_buffer.document_remove(*info);
 	}
