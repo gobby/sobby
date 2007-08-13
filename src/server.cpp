@@ -65,7 +65,8 @@ Sobby::Server::Server(int argc, char* argv[]):
 {
 	Glib::ustring name;
 	Glib::ustring password;
-	const char* session = NULL;
+	std::string session;
+	bool session_from_config = false;
 
 	std::string autosave_file;
 	std::string autosave_folder;
@@ -134,6 +135,9 @@ Sobby::Server::Server(int argc, char* argv[]):
 		m_command_dir = entry.get_value<Glib::ustring>(
 			"command_directory", ""
 		);
+
+		session = entry.get_value<std::string>("session", "");
+		session_from_config = true;
 	}
 	else
 	{
@@ -144,6 +148,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 		autosave_interval = 0;
 		password = "";
 		m_command_dir = "";
+		session = "";
 	}
 
 	// Parse another time to get remaining options
@@ -267,9 +272,12 @@ Sobby::Server::Server(int argc, char* argv[]):
 
 	opt_ctx.parse(argc, argv);
 
-	// Get session file
+	// Get session file (overwrite config)
 	if(argc > 1)
+	{
 		session = argv[1];
+		session_from_config = false;
+	}
 
 	// Set default settings
 	// TODO: Should set them before parsing, but the parser resets
@@ -311,6 +319,9 @@ Sobby::Server::Server(int argc, char* argv[]):
 			m_command_dir = entry.get_value<Glib::ustring>(
 				"command_directory", ""
 			);
+
+		if(session.empty())
+			session = entry.get_value<std::string>("session", "");
 	}
 	else
 	{
@@ -321,6 +332,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 		if(autosave_interval == 0) autosave_interval = 0;
 		if(password.empty() ) password = "";
 		if(m_command_dir.empty()) m_command_dir = "";
+		if(session.empty()) session = "";
 	}
 
 	if(!config_file_write.empty() )
@@ -339,6 +351,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 		entry.set_value("autosave_interval", autosave_interval);
 		entry.set_value("password", password);
 		entry.set_value("command_directory", m_command_dir);
+		entry.set_value("session", session);
 
 		config.save(config_file_write);
 
@@ -353,7 +366,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 	m_server.reset(new ServerBuffer);
 	m_server->set_enable_keepalives(true);
 
-	if(session == NULL)
+	if(session.empty())
 	{
 		m_server->open(m_port);
 	}
@@ -363,8 +376,11 @@ Sobby::Server::Server(int argc, char* argv[]):
 		{
 			m_server->open(session, m_port);
 		}
-		catch(std::exception& e)
+		catch(const std::exception& e)
 		{
+			// Bail if we read the session from the config file
+			if(session_from_config) throw;
+
 			// It is not an obby session file, so load it as
 			// normal document.
 			if(m_server->is_open()) m_server->close();
