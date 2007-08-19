@@ -1,6 +1,9 @@
 sobby
 =====
 
+Version 0.4.4:
+ * Allow initial session file to be specified in the configuration file
+
 Version 0.4.3:
  * Support for command directories from which executables could be called
    via Sobby commands
