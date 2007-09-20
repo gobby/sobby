@@ -1,3 +1,8 @@
+2007-09-20  Philipp Kern <phil@0x539.de>
+
+	* src/command_executer.cpp: added unistd.h to the list of includes
+	  to ease porting to OpenBSD
+
 2007-08-18  Philipp Kern <phil@0x539.de>
 
 	* NEWS:

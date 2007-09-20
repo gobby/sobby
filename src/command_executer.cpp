@@ -21,6 +21,7 @@
 
 #include <glibmm/spawn.h>
 #include <glibmm/miscutils.h>
+#include <unistd.h>
 
 Sobby::CommandExecuter::CommandExecuter(const Server& server,
                                         ServerBuffer& buffer):
