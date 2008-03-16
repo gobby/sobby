@@ -1,0 +1,17 @@
+*.o
+INSTALL
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache
+config.log
+config.sub
+config.guess
+config.status
+configure
+depcomp
+missing
+sobby
+install-sh
+stamp-h1
+.deps
