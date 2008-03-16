@@ -1,3 +1,17 @@
+2008-03-16  Armin Burgmeier  <armin@0x539.de>
+
+	* inc/autosaver.hpp:
+	* inc/autosave_folder.hpp:
+	* src/autosaver.cpp:
+	* src/autosave_folder.cpp: Added public save() function, don't set
+	timeout when interval is 0.
+
+	* inc/server.hpp:
+	* src/server.cpp: Added public save() function, also create autosavers
+	when autosave interval is 0.
+
+	* main.cpp: Run both autosavers on SIGUSR1, fixing #345.
+
 2007-09-20  Philipp Kern <phil@0x539.de>
 
 	* src/command_executer.cpp: added unistd.h to the list of includes

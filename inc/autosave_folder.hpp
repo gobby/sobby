@@ -44,6 +44,8 @@ public:
 	~AutoSaveFolder();
 
 	signal_error_type error_event() const;
+
+	void save();
 protected:
 	typedef std::map<DocumentInfo*, bool> map_type;
 

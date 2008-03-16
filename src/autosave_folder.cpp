@@ -32,10 +32,13 @@ Sobby::AutoSaveFolder::AutoSaveFolder(const ServerBuffer& buffer,
                             unsigned int interval):
 	m_buffer(buffer), m_folder(folder)
 {
-	m_conn_timer = Glib::signal_timeout().connect(
-		sigc::mem_fun(*this, &AutoSaveFolder::on_timer),
-		interval * 1000
-	);
+	if(interval > 0)
+	{
+		m_conn_timer = Glib::signal_timeout().connect(
+			sigc::mem_fun(*this, &AutoSaveFolder::on_timer),
+			interval * 1000
+		);
+	}
 
 	buffer.document_insert_event().connect(
 		sigc::mem_fun(*this, &AutoSaveFolder::on_document_insert));
@@ -77,7 +80,7 @@ Sobby::AutoSaveFolder::signal_error_type Sobby::AutoSaveFolder::error_event() co
 	return m_signal_error;
 }
 
-bool Sobby::AutoSaveFolder::on_timer()
+void Sobby::AutoSaveFolder::save()
 {
 	try
 	{
@@ -112,5 +115,10 @@ bool Sobby::AutoSaveFolder::on_timer()
 		m_signal_error.emit(e);
 	}
 
+}
+
+bool Sobby::AutoSaveFolder::on_timer()
+{
+	save();
 	return true;
 }

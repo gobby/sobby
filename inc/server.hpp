@@ -57,6 +57,7 @@ public:
 	~Server();
 
         void run();
+	void save();
 
 	bool on_cmd_exit(const ArgList& args);
 	bool on_cmd_help(const ArgList& args);

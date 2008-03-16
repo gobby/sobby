@@ -31,10 +31,13 @@ Sobby::AutoSaver::AutoSaver(const ServerBuffer& buffer,
                             unsigned int interval):
 	m_buffer(buffer), m_filename(filename)
 {
-	m_conn_timer = Glib::signal_timeout().connect(
-		sigc::mem_fun(*this, &AutoSaver::on_timer),
-		interval * 1000
-	);
+	if(interval > 0)
+	{
+		m_conn_timer = Glib::signal_timeout().connect(
+			sigc::mem_fun(*this, &AutoSaver::on_timer),
+			interval * 1000
+		);
+	}
 }
 
 Sobby::AutoSaver::~AutoSaver()
@@ -47,7 +50,7 @@ Sobby::AutoSaver::signal_error_type Sobby::AutoSaver::error_event() const
 	return m_signal_error;
 }
 
-bool Sobby::AutoSaver::on_timer()
+void Sobby::AutoSaver::save()
 {
 	try
 	{
@@ -67,5 +70,10 @@ bool Sobby::AutoSaver::on_timer()
 		m_signal_error.emit(e);
 	}
 
+}
+
+bool Sobby::AutoSaver::on_timer()
+{
+	save();
 	return true;
 }

@@ -43,6 +43,8 @@ public:
 	~AutoSaver();
 
 	signal_error_type error_event() const;
+
+	void save();
 protected:
 	bool on_timer();
 

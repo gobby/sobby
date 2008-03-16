@@ -23,10 +23,33 @@
 #include <glibmm/miscutils.h>
 #include "server.hpp"
 
+#include <csignal>
+#include <cstring>
+#include <cerrno>
+
+namespace
+{
+	Sobby::Server* server_;
+
+	void on_signal_usr1(int sig)
+	{
+		if(server_) server_->save();
+	}
+}
+
 int main(int argc, char* argv[]) try
 {
 	// Create server, parse command line options
 	Sobby::Server server(argc, argv);
+	// Set global server_ variable for use in signal handler
+	server_ = &server;
+	// Register SIGUSR1 to save session there
+	if(signal(SIGUSR1, on_signal_usr1) != 0)
+	{
+		int save_errno = errno;
+		std::cerr << "Could not register SIGUSR1: "
+		          << std::strerror(save_errno) << std::endl;
+	}
 	// Run it
 	server.run();
 	// Success, if no exception has been thrown

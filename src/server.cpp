@@ -406,41 +406,38 @@ Sobby::Server::Server(int argc, char* argv[]):
 
 	m_server->set_global_password(password);
 
-	if(autosave_interval > 0)
+	if(autosave_folder.empty())
 	{
-		if(autosave_folder.empty())
+		m_autosaver.reset(
+			new AutoSaver(
+				*m_server,
+				autosave_file,
+				autosave_interval
+			)
+		);
+
+		m_autosaver->error_event().connect(
+			sigc::mem_fun(*this, &Server::on_autosave_error) );
+	}
+	else
+	{
+		if(!Glib::file_test(autosave_folder, Glib::FILE_TEST_IS_DIR))
 		{
-			m_autosaver.reset(
-				new AutoSaver(
-					*m_server,
-					autosave_file,
-					autosave_interval
-				)
-			);
-
-			m_autosaver->error_event().connect(
-				sigc::mem_fun(*this, &Server::on_autosave_error) );
+			obby::format_string str("'%0%' is not a directory");
+			str << autosave_folder;
+			throw std::runtime_error(str.str()); 
 		}
-		else
-		{
-			if(!Glib::file_test(autosave_folder, Glib::FILE_TEST_IS_DIR))
-			{
-				obby::format_string str("'%0%' is not a directory");
-				str << autosave_folder;
-				throw std::runtime_error(str.str()); 
-			}
 
-			m_autosave_folder.reset(
-				new AutoSaveFolder(
-					*m_server,
-					autosave_folder,
-					autosave_interval
-				)
-			);
+		m_autosave_folder.reset(
+			new AutoSaveFolder(
+				*m_server,
+				autosave_folder,
+				autosave_interval
+			)
+		);
 
-			m_autosave_folder->error_event().connect(
-				sigc::mem_fun(*this, &Server::on_autosave_error) );
-		}
+		m_autosave_folder->error_event().connect(
+			sigc::mem_fun(*this, &Server::on_autosave_error) );
 	}
 
 	m_command_executer.reset(new CommandExecuter(*this, *m_server) );
@@ -510,6 +507,12 @@ void Sobby::Server::run()
 
 	// Run main loop
 	m_main_loop->run();
+}
+
+void Sobby::Server::save()
+{
+	if(m_autosaver.get()) m_autosaver->save();
+	if(m_autosave_folder.get()) m_autosave_folder->save();
 }
 
 bool Sobby::Server::on_stdin(Glib::IOCondition condition)
