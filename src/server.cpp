@@ -71,6 +71,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 	std::string autosave_file;
 	std::string autosave_folder;
 	int autosave_interval;
+	std::string post_save_hook;
 
 	std::string config_file_read;
 	std::string config_file_write;
@@ -130,6 +131,11 @@ Sobby::Server::Server(int argc, char* argv[]):
 		autosave_interval = entry.get_value<unsigned int>(
 			"autosave_interval", 0
 		);
+
+		post_save_hook = entry.get_value<std::string>(
+			"post_save_hook", ""
+		);
+
 		password = entry.get_value<Glib::ustring>("password", "");
 
 		m_command_dir = entry.get_value<Glib::ustring>(
@@ -146,6 +152,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 		autosave_folder = "";
 		autosave_file = "autosave.obby";
 		autosave_interval = 0;
+		post_save_hook = "";
 		password = "";
 		m_command_dir = "";
 		session = "";
@@ -195,6 +202,14 @@ Sobby::Server::Server(int argc, char* argv[]):
 		"Interval (in seconds) between autosaves; 0 disables autosave"
 	);
 
+	Glib::OptionEntry opt_common_post_save_hook;
+	opt_common_post_save_hook.set_long_name("post-save-hook");
+	opt_common_post_save_hook.set_arg_description("FILE");
+	opt_common_post_save_hook.set_description(
+		"Executable to be executed every time the file specified "
+		"in autosave-file has been written"
+	);
+
 	Glib::OptionEntry opt_common_command_dir;
 	opt_common_command_dir.set_long_name("command-directory");
 	opt_common_command_dir.set_arg_description("DIRECTORY");
@@ -241,6 +256,11 @@ Sobby::Server::Server(int argc, char* argv[]):
 	opt_group_common.add_entry(
 		opt_common_autosave_interval,
 		autosave_interval
+	);
+
+	opt_group_common.add_entry_filename(
+		opt_common_post_save_hook,
+		post_save_hook
 	);
 
 	opt_group_common.add_entry_filename(
@@ -310,6 +330,11 @@ Sobby::Server::Server(int argc, char* argv[]):
 				"autosave_interval", 0
 			);
 
+		if(post_save_hook.empty())
+			post_save_hook = entry.get_value<std::string>(
+				"post_save_hook", ""
+			);
+
 		if(password.empty() )
 			password = entry.get_value<Glib::ustring>(
 				"password", ""
@@ -330,6 +355,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 		if(autosave_folder.empty()) autosave_folder = "";
 		if(autosave_file.empty() ) autosave_file = "autosave.obby";
 		if(autosave_interval == 0) autosave_interval = 0;
+		if(post_save_hook.empty()) post_save_hook = "";
 		if(password.empty() ) password = "";
 		if(m_command_dir.empty()) m_command_dir = "";
 		if(session.empty()) session = "";
@@ -349,6 +375,7 @@ Sobby::Server::Server(int argc, char* argv[]):
 		entry.set_value("autosave_file", autosave_file);
 		entry.set_value("autosave_directory", autosave_folder);
 		entry.set_value("autosave_interval", autosave_interval);
+		entry.set_value("post_save_hook", post_save_hook);
 		entry.set_value("password", password);
 		entry.set_value("command_directory", m_command_dir);
 		entry.set_value("session", session);
@@ -412,7 +439,8 @@ Sobby::Server::Server(int argc, char* argv[]):
 			new AutoSaver(
 				*m_server,
 				autosave_file,
-				autosave_interval
+				autosave_interval,
+				post_save_hook
 			)
 		);
 

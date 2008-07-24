@@ -24,12 +24,15 @@
 #include <stdexcept>
 #include <glibmm/main.h>
 #include <glibmm/miscutils.h>
+#include <glibmm/spawn.h>
 #include "autosaver.hpp"
 
 Sobby::AutoSaver::AutoSaver(const ServerBuffer& buffer,
                             const std::string& filename,
-                            unsigned int interval):
-	m_buffer(buffer), m_filename(filename), m_has_modification(true)
+                            unsigned int interval,
+			    const std::string& post_save_hook):
+	m_buffer(buffer), m_filename(filename),
+	m_post_save_hook(post_save_hook), m_has_modification(true)
 {
 	if(interval > 0)
 	{
@@ -93,12 +96,25 @@ void Sobby::AutoSaver::save()
 
 		m_buffer.serialise(m_filename);
 		m_has_modification = false;
+
+		if(!m_post_save_hook.empty())
+		{
+			std::vector<std::string> argv;
+			argv.push_back(m_post_save_hook);
+			argv.push_back(m_filename);
+
+			Glib::spawn_async(".", argv);
+		}
 	}
 	catch(std::exception& e)
 	{
 		m_signal_error.emit(e);
 	}
-
+	catch(Glib::Exception& e)
+	{
+		// TODO: Convert to locale?
+		m_signal_error.emit(std::runtime_error(e.what()));
+	}
 }
 
 bool Sobby::AutoSaver::on_timer()

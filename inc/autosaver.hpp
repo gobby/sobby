@@ -39,7 +39,8 @@ public:
 
 	AutoSaver(const ServerBuffer& buffer,
 	          const std::string& filename,
-	          unsigned int interval);
+	          unsigned int interval,
+		  const std::string& post_save_hook);
 	~AutoSaver();
 
 	signal_error_type error_event() const;
@@ -54,6 +55,7 @@ protected:
 
 	const ServerBuffer& m_buffer;
 	std::string m_filename;
+	std::string m_post_save_hook;
 	sigc::connection m_conn_timer;
 	signal_error_type m_signal_error;
 

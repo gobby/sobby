@@ -1,6 +1,15 @@
 2008-07-24  Armin Burgmeier  <armin@0x539.de>
 
 	* inc/autosaver.hpp:
+	* src/autosaver.cpp: Added a post_save_hook property that specifies a
+	command that is executed everytime the session has been saved to disk.
+
+	* src/server.cpp: Added post-save-hook command line and configuration
+	option.
+
+2008-07-24  Armin Burgmeier  <armin@0x539.de>
+
+	* inc/autosaver.hpp:
 	* src/autosaver.cpp: Only save if the session has been changed since
 	it has been saved the last time.
 
