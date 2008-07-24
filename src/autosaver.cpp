@@ -29,7 +29,7 @@
 Sobby::AutoSaver::AutoSaver(const ServerBuffer& buffer,
                             const std::string& filename,
                             unsigned int interval):
-	m_buffer(buffer), m_filename(filename)
+	m_buffer(buffer), m_filename(filename), m_has_modification(true)
 {
 	if(interval > 0)
 	{
@@ -38,11 +38,39 @@ Sobby::AutoSaver::AutoSaver(const ServerBuffer& buffer,
 			interval * 1000
 		);
 	}
+
+	buffer.document_insert_event().connect(
+		sigc::mem_fun(*this, &AutoSaver::on_document_insert));
+	buffer.document_remove_event().connect(
+		sigc::mem_fun(*this, &AutoSaver::on_document_remove));
+
+	for(ServerBuffer::document_iterator iter = buffer.document_begin();
+	    iter != buffer.document_end(); ++ iter)
+	{
+		on_document_insert(*iter);
+	}
 }
 
 Sobby::AutoSaver::~AutoSaver()
 {
 	m_conn_timer.disconnect();
+}
+
+void Sobby::AutoSaver::on_document_insert(DocumentInfo& document)
+{
+	document.get_content().changed_event().connect(
+		sigc::mem_fun(*this, &AutoSaver::on_document_change));
+
+	m_has_modification = true;
+}
+
+void Sobby::AutoSaver::on_document_remove(DocumentInfo& document)
+{
+}
+
+void Sobby::AutoSaver::on_document_change()
+{
+	m_has_modification = true;
 }
 
 Sobby::AutoSaver::signal_error_type Sobby::AutoSaver::error_event() const
@@ -64,6 +92,7 @@ void Sobby::AutoSaver::save()
 			throw std::runtime_error(std::strerror(errno) );*/
 
 		m_buffer.serialise(m_filename);
+		m_has_modification = false;
 	}
 	catch(std::exception& e)
 	{
@@ -74,6 +103,6 @@ void Sobby::AutoSaver::save()
 
 bool Sobby::AutoSaver::on_timer()
 {
-	save();
+	if(m_has_modification) save();
 	return true;
 }

@@ -48,10 +48,16 @@ public:
 protected:
 	bool on_timer();
 
+	void on_document_insert(DocumentInfo& info);
+	void on_document_remove(DocumentInfo& info);
+	void on_document_change();
+
 	const ServerBuffer& m_buffer;
 	std::string m_filename;
 	sigc::connection m_conn_timer;
 	signal_error_type m_signal_error;
+
+	bool m_has_modification;
 };
 
 }
