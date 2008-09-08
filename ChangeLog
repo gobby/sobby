@@ -1,3 +1,10 @@
+2008-09-08  Armin Burgmeier  <armin@0x539.de>
+
+	* inc/server.hpp:
+	* src/server.cpp: Added quit method.
+
+	* src/main.cpp: Run all autosavers on SIGTERM, and exit properly.
+
 2008-07-24  Armin Burgmeier  <armin@0x539.de>
 
 	* inc/autosaver.hpp:

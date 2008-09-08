@@ -35,6 +35,15 @@ namespace
 	{
 		if(server_) server_->save();
 	}
+
+	void on_signal_term(int sig)
+	{
+		if(server_)
+		{
+			server_->save();
+			server_->quit();
+		}
+	}
 }
 
 int main(int argc, char* argv[]) try
@@ -48,6 +57,13 @@ int main(int argc, char* argv[]) try
 	{
 		int save_errno = errno;
 		std::cerr << "Could not register SIGUSR1: "
+		          << std::strerror(save_errno) << std::endl;
+	}
+	// Register SIGTERM to save session there
+	if(signal(SIGTERM, on_signal_term) != 0)
+	{
+		int save_errno = errno;
+		std::cerr << "Could not register SIGTERM: "
 		          << std::strerror(save_errno) << std::endl;
 	}
 	// Run it

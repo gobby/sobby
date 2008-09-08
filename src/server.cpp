@@ -537,6 +537,11 @@ void Sobby::Server::run()
 	m_main_loop->run();
 }
 
+void Sobby::Server::quit()
+{
+	m_main_loop->quit();
+}
+
 void Sobby::Server::save()
 {
 	if(m_autosaver.get()) m_autosaver->save();
