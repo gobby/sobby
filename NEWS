@@ -1,6 +1,14 @@
 sobby
 =====
 
+Version 0.4.5:
+ * Run autosave on SIGUSR1 and SIGTERM if an autosave file is specified,
+   even if autosave interval is 0.
+ * Only autosave if the session changed.
+ * Added a post-save-hook which could be used to tie the autosave to
+   a VCS commit.
+ * Ease porting to OpenBSD.
+
 Version 0.4.4:
  * Allow initial session file to be specified in the configuration file
 
