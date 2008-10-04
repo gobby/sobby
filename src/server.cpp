@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include <glibmm/fileutils.h>
+#include <glibmm/miscutils.h>
 #include <glibmm/optionentry.h>
 #include <glibmm/optiongroup.h>
 #include <glibmm/optioncontext.h>
@@ -426,14 +427,14 @@ Sobby::Server::Server(int argc, char* argv[]):
 					throw std::runtime_error(errstring.str());
 				}
 
-				m_server->document_create(argv[i], "UTF-8", content);
+				m_server->document_create(Glib::path_get_basename(argv[i]), "UTF-8", content);
 			}
 		}
 	}
 
 	m_server->set_global_password(password);
 
-	if(autosave_folder.empty())
+	if(!autosave_file.empty())
 	{
 		m_autosaver.reset(
 			new AutoSaver(
@@ -447,7 +448,8 @@ Sobby::Server::Server(int argc, char* argv[]):
 		m_autosaver->error_event().connect(
 			sigc::mem_fun(*this, &Server::on_autosave_error) );
 	}
-	else
+
+	if(!autosave_folder.empty())
 	{
 		if(!Glib::file_test(autosave_folder, Glib::FILE_TEST_IS_DIR))
 		{
