@@ -18,6 +18,10 @@
 
 #include "gselector.hpp"
 
+#ifndef _WIN32
+# include <fcntl.h>
+#endif
+
 namespace
 {
 	inline Glib::IOCondition gcond(net6::io_condition cond)
@@ -71,6 +75,13 @@ void Sobby::GSelector::add_socket(const net6::socket& sock,
 	if( (cond & IO_FLAGS) != net6::IO_NONE)
 	{
 		net6::socket::socket_type fd = sock.cobj();
+
+#ifndef _WIN32
+		// Put the socket unconditionally into non-blocking mode.
+		int current_flags = fcntl(fd, F_GETFL);
+		if(fcntl(fd, F_SETFL, current_flags | O_NONBLOCK) == -1)
+			throw net6::error(net6::error::SYSTEM);
+#endif
 
 		sel.io_chan =
 #ifdef _WIN32
