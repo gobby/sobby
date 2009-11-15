@@ -1,3 +1,8 @@
+2009-11-15  Philipp Kern  <phil@0x539.de>
+
+	* configure.ac:
+	* NEWS: bump version to 0.4.6 and document the changes
+
 2009-05-29  Philipp Kern  <phil@0x539.de>
 
 	* src/gselector.cpp: Set sockets to non-blocking when adding them to

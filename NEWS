@@ -1,6 +1,11 @@
 sobby
 =====
 
+Version 0.4.6:
+ * Allow to configure both autosaving facilities (file and directory).
+ * Initial files are added without directory names in their document title.
+ * Create sockets non-blocking on *nix systems.
+
 Version 0.4.5:
  * Run autosave on SIGUSR1 and SIGTERM if an autosave file is specified,
    even if autosave interval is 0.
