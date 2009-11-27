@@ -1,3 +1,8 @@
+2009-11-27  Armin Burgmeier  <armin@0x539.de>
+
+	* src/config.cpp: Throw an exception if the config file could not be
+	loaded. Bug #510.
+
 2009-11-15  Philipp Kern  <phil@0x539.de>
 
 	* configure.ac:

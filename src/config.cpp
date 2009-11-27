@@ -279,9 +279,15 @@ Sobby::Config::Config(const Glib::ustring& file):
 	}
 	catch(xmlpp::exception& e)
 	{
+		// Fail if config file is not present. Bug #510.
+		throw std::runtime_error("Failed to load config file \"" +
+		                         file + "\": " + e.what());
+
+#if 0
 		// Empty config
 		m_root.reset(new ParentEntry("sobby_config") );
 		return;
+#endif
 	}
 
 	xmlpp::Document* document = parser.get_document();
