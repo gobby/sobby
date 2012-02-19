@@ -1,6 +1,9 @@
 sobby
 =====
 
+Version 0.4.8:
+ * Fix a build failure when compiled using glibmm 2.31 or greater
+
 Version 0.4.7:
  * Depend on net6 >= 1.3.12 to handle non-blocking sockets correctly.
    We urge everybody using Sobby 0.4.6 to install net6 1.3.12 or higher.
