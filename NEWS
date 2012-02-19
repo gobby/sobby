@@ -1,6 +1,11 @@
 sobby
 =====
 
+Version 0.4.7:
+ * Depend on net6 >= 1.3.12 to handle non-blocking sockets correctly.
+   We urge everybody using Sobby 0.4.6 to install net6 1.3.12 or higher.
+ * Fail on startup when the configuration file cannot be read.
+
 Version 0.4.6:
  * Allow to configure both autosaving facilities (file and directory).
  * Initial files are added without directory names in their document title.
